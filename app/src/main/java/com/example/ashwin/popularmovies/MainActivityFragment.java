@@ -28,11 +28,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+    private ImageAdapter gridViewAdapter;
 
     public MainActivityFragment() {
     }
@@ -48,7 +50,8 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(getActivity()));
+        gridViewAdapter = new ImageAdapter(getActivity());
+        gridview.setAdapter(gridViewAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -74,17 +77,33 @@ public class MainActivityFragment extends Fragment {
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private ArrayList<String> mThumbUris;
+        private String drawablePrefix;
 
         public ImageAdapter(Context c) {
             mContext = c;
+            String packName = mContext.getPackageName();
+            drawablePrefix = "android.resource://" + packName;
+
+            ArrayList<String> uriPaths = new ArrayList<>();
+            // not sure
+            uriPaths.add(drawablePrefix + R.drawable.a1);
+            uriPaths.add(drawablePrefix + R.drawable.a2);
+            uriPaths.add(drawablePrefix + R.drawable.a3);
+            uriPaths.add(drawablePrefix + R.drawable.a4);
+            uriPaths.add(drawablePrefix + R.drawable.a5);
+            uriPaths.add(drawablePrefix + R.drawable.a6);
+            uriPaths.add(drawablePrefix + R.drawable.a7);
+            uriPaths.add(drawablePrefix + R.drawable.a8);
+            mThumbUris = uriPaths;
         }
 
         public int getCount() {
-            return mThumbIds.length;
+            return mThumbUris.size();
         }
 
         public Object getItem(int position) {
-            return null;
+            return mThumbUris.get(position);
         }
 
         public long getItemId(int position) {
@@ -100,8 +119,10 @@ public class MainActivityFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
+            Uri imgUri = Uri.parse(mThumbUris.get(position));
+
             Picasso.with(getContext())
-                    .load(mThumbIds[position])
+                    .load(imgUri) // just put website inside
                     .placeholder(R.raw.placeholder)
                     .error(R.raw.big_problem)
                     .resize(396,594)
@@ -111,22 +132,16 @@ public class MainActivityFragment extends Fragment {
             return imageView;
         }
 
-        // references to our images
-        private Integer[] mThumbIds = {
-                R.drawable.a1, R.drawable.a2,
-                R.drawable.a3, R.drawable.a4,
-                R.drawable.a5, R.drawable.a6,
-                R.drawable.a7, R.drawable.a8,
-                R.drawable.a9, R.drawable.a10,
-                R.drawable.a11, R.drawable.a12,
-        };
+        public ArrayList<String> getUriList() {
+            return mThumbUris;
+        }
     }
 
     // insert async task here with parsing JSON
-    public class FetchMovieTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchMovieTask extends AsyncTask<Void, Void, String[][]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
-        protected String[] doInBackground(Void... params) {
+        protected String[][] doInBackground(Void... params) {
             /*
             if (params.length == 0) {
                 return null;
@@ -203,8 +218,10 @@ public class MainActivityFragment extends Fragment {
             return null;
         }
 
-        private String[] getMovieDataFromJson (String movieJsonStr, int movieNum) throws JSONException {
-            String[] resultStr = new String[movieNum*2];
+        // try using multi dimensional array instead.
+        // one for poster image and the other for descriptions
+        private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum) throws JSONException {
+            String[][] resultStr = new String[2][movieNum];
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray resultArray = movieJson.getJSONArray("results");
             for (int i = 0, j = 0; i < resultArray.length(); ++i) {
@@ -214,13 +231,23 @@ public class MainActivityFragment extends Fragment {
                 String overview = resultArray.getJSONObject(i).getString("overview");
                 String userRating = resultArray.getJSONObject(i).getString("vote_average");
                 String posterPath = resultArray.getJSONObject(i).getString("poster_path");
-                resultStr[j++] = originalTitle + "\n" + userRating + "\n" + overview;
-                resultStr[j++] = posterPath;
-            }
-            for (String str : resultStr) {
-                Log.v(LOG_TAG, str);
+                resultStr[0][i] = originalTitle + "\n" + userRating + "\n" + overview;
+                resultStr[1][i] = posterPath;
             }
             return resultStr;
+        }
+
+        @Override
+        protected void onPostExecute(String[][] result) {
+            if (result != null) {
+                ArrayList<String> uriPaths = gridViewAdapter.getUriList();
+                uriPaths.clear();
+                for (int i = 0; i < result[1].length; ++i) {
+                    String url = "http://image.tmdb.org/t/p/w185" + result[1][i];
+                    uriPaths.add(url);
+                }
+                gridViewAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
