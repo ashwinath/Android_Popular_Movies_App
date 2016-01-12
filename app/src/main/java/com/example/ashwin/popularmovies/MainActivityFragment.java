@@ -69,7 +69,6 @@ public class MainActivityFragment extends Fragment {
         if (id == R.id.action_refresh) {
             FetchMovieTask movieTask = new FetchMovieTask();
             movieTask.execute();
-            Log.v("onOptionsItemSelected", "working");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -87,14 +86,6 @@ public class MainActivityFragment extends Fragment {
 
             ArrayList<String> uriPaths = new ArrayList<>();
             // not sure
-            uriPaths.add(drawablePrefix + R.drawable.a1);
-            uriPaths.add(drawablePrefix + R.drawable.a2);
-            uriPaths.add(drawablePrefix + R.drawable.a3);
-            uriPaths.add(drawablePrefix + R.drawable.a4);
-            uriPaths.add(drawablePrefix + R.drawable.a5);
-            uriPaths.add(drawablePrefix + R.drawable.a6);
-            uriPaths.add(drawablePrefix + R.drawable.a7);
-            uriPaths.add(drawablePrefix + R.drawable.a8);
             mThumbUris = uriPaths;
         }
 
@@ -124,9 +115,7 @@ public class MainActivityFragment extends Fragment {
             Picasso.with(getContext())
                     .load(imgUri) // just put website inside
                     .placeholder(R.raw.placeholder)
-                    .error(R.raw.big_problem)
-                    .resize(396,594)
-                    .centerCrop()
+                    .fit()
                     .into(imageView);
 
             return imageView;
@@ -135,6 +124,17 @@ public class MainActivityFragment extends Fragment {
         public ArrayList<String> getUriList() {
             return mThumbUris;
         }
+    }
+
+    private void updateMovie() {
+        FetchMovieTask movieTask = new FetchMovieTask();
+        movieTask.execute();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovie();
     }
 
     // insert async task here with parsing JSON
