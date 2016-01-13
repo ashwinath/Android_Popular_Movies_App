@@ -1,6 +1,7 @@
 package com.example.ashwin.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -56,8 +57,9 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent (getActivity(), DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "hello");
+                startActivity(intent);
             }
         });
         return rootView;
@@ -77,6 +79,7 @@ public class MainActivityFragment extends Fragment {
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
         private ArrayList<String> mThumbUris;
+        private ArrayList<String> movieStrings;
         private String drawablePrefix;
 
         public ImageAdapter(Context c) {
@@ -85,8 +88,10 @@ public class MainActivityFragment extends Fragment {
             drawablePrefix = "android.resource://" + packName;
 
             ArrayList<String> uriPaths = new ArrayList<>();
+            ArrayList<String> movieDetails = new ArrayList<>();
             // not sure
             mThumbUris = uriPaths;
+            movieStrings = movieDetails;
         }
 
         public int getCount() {
@@ -123,6 +128,10 @@ public class MainActivityFragment extends Fragment {
 
         public ArrayList<String> getUriList() {
             return mThumbUris;
+        }
+
+        public ArrayList<String> getMovieDetails() {
+            return movieStrings;
         }
     }
 
@@ -241,10 +250,13 @@ public class MainActivityFragment extends Fragment {
         protected void onPostExecute(String[][] result) {
             if (result != null) {
                 ArrayList<String> uriPaths = gridViewAdapter.getUriList();
+                ArrayList<String> movieStrings = gridViewAdapter.getMovieDetails();
+                movieStrings.clear();
                 uriPaths.clear();
                 for (int i = 0; i < result[1].length; ++i) {
                     String url = "http://image.tmdb.org/t/p/w185" + result[1][i];
                     uriPaths.add(url);
+                    movieStrings.add(result[0][i]);
                 }
                 gridViewAdapter.notifyDataSetChanged();
             }
