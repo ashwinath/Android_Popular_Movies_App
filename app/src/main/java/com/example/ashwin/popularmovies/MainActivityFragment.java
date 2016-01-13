@@ -130,13 +130,15 @@ public class MainActivityFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
+            imageView.setAdjustViewBounds(true);
+
             Uri imgUri = Uri.parse(mThumbUris.get(position));
 
             Picasso.with(getContext())
                     .load(imgUri) // just put website inside
                     .placeholder(R.raw.placeholder)
                     .fit()
-                    .centerCrop()
+                    .centerInside()
                     .into(imageView);
 
             return imageView;

@@ -1,5 +1,6 @@
 package com.example.ashwin.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
@@ -50,7 +53,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Intent intent = getActivity().getIntent();
-            View rootView = inflater.inflate (R.layout.fragment_detail, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 movieString = intent.getStringExtra(intent.EXTRA_TEXT);
                 Log.v(LOG_TAG, movieString);
