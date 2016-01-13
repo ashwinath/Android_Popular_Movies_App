@@ -29,14 +29,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
     private ImageAdapter gridViewAdapter;
-    public String[][] movieStr;
 
     public MainActivityFragment() {
     }
@@ -58,8 +56,12 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
+                String movieDetails = (gridViewAdapter.getMovieStr()).get(position);
+                String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
+                String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
                 Intent intent = new Intent (getActivity(), DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "HELLO FROM THE OTHER SIDE");
+                intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating:\n" + ratingDetails
+                                + "\nSynopsis:\n" + synopsisDetails);
                 startActivity(intent);
             }
         });
@@ -81,6 +83,21 @@ public class MainActivityFragment extends Fragment {
         private Context mContext;
         private ArrayList<String> mThumbUris;
         private String drawablePrefix;
+        private ArrayList<String> movieStr = new ArrayList<>();
+        private ArrayList<String> ratingStr = new ArrayList<>();
+        private ArrayList<String> synopsisStr = new ArrayList<>();
+
+        private ArrayList<String> getMovieStr() {
+            return movieStr;
+        }
+
+        private ArrayList<String> getRatingStr() {
+            return ratingStr;
+        }
+
+        private ArrayList<String> getSynopsisStr() {
+            return synopsisStr;
+        }
 
         public ImageAdapter(Context c) {
             mContext = c;
@@ -225,7 +242,7 @@ public class MainActivityFragment extends Fragment {
         // try using multi dimensional array instead.
         // one for poster image and the other for descriptions
         private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum) throws JSONException {
-            String[][] resultStr = new String[2][movieNum];
+            String[][] resultStr = new String[4][movieNum];
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray resultArray = movieJson.getJSONArray("results");
             for (int i = 0, j = 0; i < resultArray.length(); ++i) {
@@ -235,8 +252,10 @@ public class MainActivityFragment extends Fragment {
                 String overview = resultArray.getJSONObject(i).getString("overview");
                 String userRating = resultArray.getJSONObject(i).getString("vote_average");
                 String posterPath = resultArray.getJSONObject(i).getString("poster_path");
-                resultStr[0][i] = originalTitle + "\nRating:\n" + userRating + "\n Synopsis:\n" + overview;
-                resultStr[1][i] = posterPath;
+                resultStr[1][i] = originalTitle;
+                resultStr[2][i] = userRating;
+                resultStr[3][i] = overview;
+                resultStr[0][i] = posterPath;
             }
             return resultStr;
         }
@@ -246,9 +265,15 @@ public class MainActivityFragment extends Fragment {
             if (result != null) {
                 ArrayList<String> uriPaths = gridViewAdapter.getUriList();
                 uriPaths.clear();
+                ArrayList<String> movieStr = gridViewAdapter.getMovieStr();
+                ArrayList<String> ratingStr = gridViewAdapter.getRatingStr();
+                ArrayList<String> synopsisStr = gridViewAdapter.getSynopsisStr();
                 for (int i = 0; i < result[1].length; ++i) {
-                    String url = "http://image.tmdb.org/t/p/w185" + result[1][i];
+                    String url = "http://image.tmdb.org/t/p/w185" + result[0][i];
                     uriPaths.add(url);
+                    movieStr.add(result[1][i]);
+                    ratingStr.add(result[2][i]);
+                    synopsisStr.add(result[3][i]);
                 }
                 gridViewAdapter.notifyDataSetChanged();
             }
