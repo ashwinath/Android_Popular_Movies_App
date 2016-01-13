@@ -60,8 +60,8 @@ public class MainActivityFragment extends Fragment {
                 String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
                 String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
                 Intent intent = new Intent (getActivity(), DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating:\n" + ratingDetails
-                                + "\nSynopsis:\n" + synopsisDetails);
+                intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating: " + ratingDetails
+                                + "\nSynopsis: " + synopsisDetails);
                 startActivity(intent);
             }
         });
@@ -136,6 +136,7 @@ public class MainActivityFragment extends Fragment {
                     .load(imgUri) // just put website inside
                     .placeholder(R.raw.placeholder)
                     .fit()
+                    .centerCrop()
                     .into(imageView);
 
             return imageView;
