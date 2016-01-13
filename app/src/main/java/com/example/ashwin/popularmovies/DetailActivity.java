@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -17,13 +19,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    // xml to be created here
                     .add(R.id.container, new DetailFragment())
                     .commit();
         }
@@ -31,7 +28,6 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // xml to be created here
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
     }
@@ -45,6 +41,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public static class DetailFragment extends Fragment {
         private final String LOG_TAG = DetailFragment.class.getSimpleName();
+        private String movieString;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -53,8 +50,13 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Intent intent = getActivity().getIntent();
-            // XML to be created here
             View rootView = inflater.inflate (R.layout.fragment_detail, container, false);
+            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
+                movieString = intent.getStringExtra(intent.EXTRA_TEXT);
+                Log.v(LOG_TAG, movieString);
+                ((TextView) rootView.findViewById(R.id.detail_text))
+                        .setText(movieString);
+            }
             return rootView;
         }
     }

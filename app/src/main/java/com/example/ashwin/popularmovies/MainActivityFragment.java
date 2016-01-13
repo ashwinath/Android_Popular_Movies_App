@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -30,12 +29,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
     private ImageAdapter gridViewAdapter;
+    public String[][] movieStr;
 
     public MainActivityFragment() {
     }
@@ -58,7 +59,7 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Intent intent = new Intent (getActivity(), DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "hello");
+                intent.putExtra(Intent.EXTRA_TEXT, "HELLO FROM THE OTHER SIDE");
                 startActivity(intent);
             }
         });
@@ -79,7 +80,6 @@ public class MainActivityFragment extends Fragment {
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
         private ArrayList<String> mThumbUris;
-        private ArrayList<String> movieStrings;
         private String drawablePrefix;
 
         public ImageAdapter(Context c) {
@@ -88,10 +88,8 @@ public class MainActivityFragment extends Fragment {
             drawablePrefix = "android.resource://" + packName;
 
             ArrayList<String> uriPaths = new ArrayList<>();
-            ArrayList<String> movieDetails = new ArrayList<>();
             // not sure
             mThumbUris = uriPaths;
-            movieStrings = movieDetails;
         }
 
         public int getCount() {
@@ -130,12 +128,9 @@ public class MainActivityFragment extends Fragment {
             return mThumbUris;
         }
 
-        public ArrayList<String> getMovieDetails() {
-            return movieStrings;
-        }
     }
 
-    private void updateMovie() {
+    public void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask();
         movieTask.execute();
     }
@@ -240,7 +235,7 @@ public class MainActivityFragment extends Fragment {
                 String overview = resultArray.getJSONObject(i).getString("overview");
                 String userRating = resultArray.getJSONObject(i).getString("vote_average");
                 String posterPath = resultArray.getJSONObject(i).getString("poster_path");
-                resultStr[0][i] = originalTitle + "\n" + userRating + "\n" + overview;
+                resultStr[0][i] = originalTitle + "\nRating:\n" + userRating + "\n Synopsis:\n" + overview;
                 resultStr[1][i] = posterPath;
             }
             return resultStr;
@@ -250,13 +245,10 @@ public class MainActivityFragment extends Fragment {
         protected void onPostExecute(String[][] result) {
             if (result != null) {
                 ArrayList<String> uriPaths = gridViewAdapter.getUriList();
-                ArrayList<String> movieStrings = gridViewAdapter.getMovieDetails();
-                movieStrings.clear();
                 uriPaths.clear();
                 for (int i = 0; i < result[1].length; ++i) {
                     String url = "http://image.tmdb.org/t/p/w185" + result[1][i];
                     uriPaths.add(url);
-                    movieStrings.add(result[0][i]);
                 }
                 gridViewAdapter.notifyDataSetChanged();
             }

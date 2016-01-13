@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/container"
-    tools:context="com.example.ashwin.popularmovies.app.DetailActivity">
+    tools:context="com.example.android.popularmovies.DetailActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
     <android.support.design.widget.AppBarLayout
