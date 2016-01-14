@@ -3,4 +3,11 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_detail">Details</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_sort">Sort By</string>
+    <string name="pref_sort_key">Popularity</string>
+    <string name="pref_sort_popularity">popularity.desc</string>
+    <string name="pref_sort_label_popularity">Popularity</string>
+    <string name="pref_sort_label_user_rating">User Ratings</string>
+    <string name="pref_sort_user_rating">vote_average.desc</string>
 </resources>

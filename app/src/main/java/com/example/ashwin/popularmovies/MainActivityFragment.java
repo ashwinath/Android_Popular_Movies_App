@@ -2,8 +2,10 @@ package com.example.ashwin.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -158,7 +160,9 @@ public class MainActivityFragment extends Fragment {
 
     public void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_user_rating));
+        movieTask.execute(sortby);
     }
 
     @Override
@@ -168,15 +172,13 @@ public class MainActivityFragment extends Fragment {
     }
 
     // insert async task here with parsing JSON
-    public class FetchMovieTask extends AsyncTask<Void, Void, String[][]> {
+    public class FetchMovieTask extends AsyncTask<String, Void, String[][]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
-        protected String[][] doInBackground(Void... params) {
-            /*
+        protected String[][] doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
-            */
             // needs to be outside try catch to use in finally
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -192,7 +194,7 @@ public class MainActivityFragment extends Fragment {
                         .appendPath("3")
                         .appendPath("discover")
                         .appendPath("movie")
-                        .appendQueryParameter("sort_by", "popularity.desc") // or vote_average.desc
+                        .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
                         .appendQueryParameter("api_key", "***REMOVED***");
                 String website = builder.build().toString();
                 URL url = new URL(website);
