@@ -56,7 +56,6 @@ public class DetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 movieString = intent.getStringExtra(intent.EXTRA_TEXT);
-                Log.v(LOG_TAG, movieString);
                 ((TextView) rootView.findViewById(R.id.detail_text))
                         .setText(movieString);
             }

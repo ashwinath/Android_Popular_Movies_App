@@ -59,9 +59,10 @@ public class MainActivityFragment extends Fragment {
                 String movieDetails = (gridViewAdapter.getMovieStr()).get(position);
                 String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
                 String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
+                String releaseDateDetails = (gridViewAdapter.getReleaseDateStr()).get(position);
                 Intent intent = new Intent (getActivity(), DetailActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating: " + ratingDetails
-                                + "\nSynopsis: " + synopsisDetails);
+                                + "\nRelease Date: " + releaseDateDetails + "\nSynopsis: " + synopsisDetails);
                 startActivity(intent);
             }
         });
@@ -86,6 +87,11 @@ public class MainActivityFragment extends Fragment {
         private ArrayList<String> movieStr = new ArrayList<>();
         private ArrayList<String> ratingStr = new ArrayList<>();
         private ArrayList<String> synopsisStr = new ArrayList<>();
+        private ArrayList<String> releaseDateStr = new ArrayList<>();
+
+        private ArrayList<String> getReleaseDateStr() {
+            return releaseDateStr;
+        }
 
         private ArrayList<String> getMovieStr() {
             return movieStr;
@@ -190,7 +196,6 @@ public class MainActivityFragment extends Fragment {
                         .appendQueryParameter("api_key", "***REMOVED***");
                 String website = builder.build().toString();
                 URL url = new URL(website);
-                Log.v(LOG_TAG, website);
 
                 // Create the request to themoviedb and open connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -217,7 +222,6 @@ public class MainActivityFragment extends Fragment {
                     return null;
                 }
                 movieJsonStr = buffer.toString();
-                Log.v(LOG_TAG, movieJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error closing stream", e);
             } finally {
@@ -245,7 +249,7 @@ public class MainActivityFragment extends Fragment {
         // try using multi dimensional array instead.
         // one for poster image and the other for descriptions
         private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum) throws JSONException {
-            String[][] resultStr = new String[4][movieNum];
+            String[][] resultStr = new String[5][movieNum];
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray resultArray = movieJson.getJSONArray("results");
             for (int i = 0, j = 0; i < resultArray.length(); ++i) {
@@ -255,9 +259,11 @@ public class MainActivityFragment extends Fragment {
                 String overview = resultArray.getJSONObject(i).getString("overview");
                 String userRating = resultArray.getJSONObject(i).getString("vote_average");
                 String posterPath = resultArray.getJSONObject(i).getString("poster_path");
+                String releaseDate = resultArray.getJSONObject(i).getString("release_date");
                 resultStr[1][i] = originalTitle;
                 resultStr[2][i] = userRating;
                 resultStr[3][i] = overview;
+                resultStr[4][i] = releaseDate;
                 resultStr[0][i] = posterPath;
             }
             return resultStr;
@@ -271,12 +277,14 @@ public class MainActivityFragment extends Fragment {
                 ArrayList<String> movieStr = gridViewAdapter.getMovieStr();
                 ArrayList<String> ratingStr = gridViewAdapter.getRatingStr();
                 ArrayList<String> synopsisStr = gridViewAdapter.getSynopsisStr();
+                ArrayList<String> releaseDateStr = gridViewAdapter.getReleaseDateStr();
                 for (int i = 0; i < result[1].length; ++i) {
                     String url = "http://image.tmdb.org/t/p/w185" + result[0][i];
                     uriPaths.add(url);
                     movieStr.add(result[1][i]);
                     ratingStr.add(result[2][i]);
                     synopsisStr.add(result[3][i]);
+                    releaseDateStr.add(result[4][i]);
                 }
                 gridViewAdapter.notifyDataSetChanged();
             }
