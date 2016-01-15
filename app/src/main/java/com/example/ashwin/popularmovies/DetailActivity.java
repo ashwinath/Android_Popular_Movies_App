@@ -16,6 +16,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class DetailActivity extends AppCompatActivity {
 
     @Override

@@ -32,9 +32,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MainActivityFragment extends Fragment {
     private ImageAdapter gridViewAdapter;
 
@@ -58,13 +55,17 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
+                // Put Poster into DetailActivity
+                // TODO
+
+                // Put words into DetailActivity
                 String movieDetails = (gridViewAdapter.getMovieStr()).get(position);
                 String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
                 String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
                 String releaseDateDetails = (gridViewAdapter.getReleaseDateStr()).get(position);
-                Intent intent = new Intent (getActivity(), DetailActivity.class);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating: " + ratingDetails
-                                + "\nRelease Date: " + releaseDateDetails + "\nSynopsis: " + synopsisDetails);
+                        + "\nRelease Date: " + releaseDateDetails + "\nSynopsis: " + synopsisDetails);
                 startActivity(intent);
             }
         });
@@ -138,16 +139,13 @@ public class MainActivityFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setAdjustViewBounds(true);
-
             Uri imgUri = Uri.parse(mThumbUris.get(position));
 
             Picasso.with(getContext())
                     .load(imgUri) // just put website inside
                     .placeholder(R.raw.placeholder)
-                    .fit()
-                    .centerInside()
                     .into(imageView);
+            imageView.setAdjustViewBounds(true);
 
             return imageView;
         }
@@ -281,7 +279,7 @@ public class MainActivityFragment extends Fragment {
                 ArrayList<String> synopsisStr = gridViewAdapter.getSynopsisStr();
                 ArrayList<String> releaseDateStr = gridViewAdapter.getReleaseDateStr();
                 for (int i = 0; i < result[1].length; ++i) {
-                    String url = "http://image.tmdb.org/t/p/w185" + result[0][i];
+                    String url = "http://image.tmdb.org/t/p/w342" + result[0][i];
                     uriPaths.add(url);
                     movieStr.add(result[1][i]);
                     ratingStr.add(result[2][i]);
