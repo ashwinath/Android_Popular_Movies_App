@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 
@@ -69,6 +70,8 @@ public class DetailActivity extends AppCompatActivity {
                 ImageView imageview = ((ImageView) rootView.findViewById(R.id.imageView));
                 Picasso.with(getContext())
                         .load(posterUri)
+                        .placeholder(R.raw.placeholder)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
                         .into(imageview);
                 // Collect the rest of the tag
                 // could separate the tags in MainActivityFragment

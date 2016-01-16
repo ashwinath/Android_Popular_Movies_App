@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -146,6 +147,7 @@ public class MainActivityFragment extends Fragment {
 
             Picasso.with(getContext())
                     .load(imgUri) // just put website inside
+                    .networkPolicy(NetworkPolicy.OFFLINE)
                     .placeholder(R.raw.placeholder)
                     .into(imageView);
             imageView.setAdjustViewBounds(true);
