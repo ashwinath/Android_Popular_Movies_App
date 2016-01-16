@@ -56,14 +56,17 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 // Put Poster into DetailActivity
-                // TODO
+                Uri posterUri = Uri.parse(gridViewAdapter.getUriList().get(position));
 
                 // Put words into DetailActivity
                 String movieDetails = (gridViewAdapter.getMovieStr()).get(position);
                 String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
                 String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
                 String releaseDateDetails = (gridViewAdapter.getReleaseDateStr()).get(position);
+
+                // Create the intent
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("imageUri", posterUri);
                 intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating: " + ratingDetails
                         + "\nRelease Date: " + releaseDateDetails + "\nSynopsis: " + synopsisDetails);
                 startActivity(intent);
