@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -147,7 +146,6 @@ public class MainActivityFragment extends Fragment {
 
             Picasso.with(getContext())
                     .load(imgUri) // just put website inside
-                    .networkPolicy(NetworkPolicy.OFFLINE)
                     .placeholder(R.raw.placeholder)
                     .into(imageView);
             imageView.setAdjustViewBounds(true);
@@ -164,7 +162,7 @@ public class MainActivityFragment extends Fragment {
     public void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_user_rating));
+        String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_label_user_rating));
         movieTask.execute(sortby);
     }
 
@@ -199,7 +197,11 @@ public class MainActivityFragment extends Fragment {
                         .appendPath("movie")
                         .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
                         .appendQueryParameter("api_key", "***REMOVED***");
+                if (params[0].equals(getString(R.string.pref_sort_user_rating))) {
+                    builder.appendQueryParameter("primary_release_year", "2015");
+                }
                 String website = builder.build().toString();
+                Log.v(LOG_TAG, website);
                 URL url = new URL(website);
 
                 // Create the request to themoviedb and open connection
@@ -284,7 +286,7 @@ public class MainActivityFragment extends Fragment {
                 ArrayList<String> synopsisStr = gridViewAdapter.getSynopsisStr();
                 ArrayList<String> releaseDateStr = gridViewAdapter.getReleaseDateStr();
                 for (int i = 0; i < result[1].length; ++i) {
-                    String url = "http://image.tmdb.org/t/p/w342" + result[0][i];
+                    String url = "http://image.tmdb.org/t/p/w185" + result[0][i];
                     uriPaths.add(url);
                     movieStr.add(result[1][i]);
                     ratingStr.add(result[2][i]);
