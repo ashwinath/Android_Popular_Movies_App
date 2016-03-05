@@ -49,6 +49,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 "(" + GenresColumns.COLUMN_GENRE_ID + "), "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ", " + GenresColumns.COLUMN_GENRE_ID
                 + ") ON CONFLICT REPLACE)";
+
         db.execSQL(SQL_CREATE_GENRES_TABLE);
         db.execSQL(SQL_CREATE_MOVIES_TABLE);
         db.execSQL(SQL_CREATE_MOVIE_GENRES_TABLE);
@@ -93,5 +94,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // do nothing as for now.
+    }
+
+    public static void deleteDatabase(Context context) {
+        context.deleteDatabase(DATABASE_NAME);
     }
 }
