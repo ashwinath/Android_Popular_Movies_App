@@ -72,7 +72,7 @@ public final class MovieContract {
     /**
      * Class that defines the Movies Table
      */
-    public static final class Movies implements BaseColumns, MovieColumns {
+    public static final class MoviesEntry implements BaseColumns, MovieColumns {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
         public static final String CONTENT_TYPE =
@@ -82,6 +82,7 @@ public final class MovieContract {
 
         // Table name
         public static final String TABLE_NAME = "movies";
+        public static final String TABLE_NAME_MOVIE_GENRES = "movie_genres";
 
         /**
          * Build Uri for movieId
