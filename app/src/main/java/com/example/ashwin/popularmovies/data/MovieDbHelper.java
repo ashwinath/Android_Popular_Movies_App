@@ -45,7 +45,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
                 + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL REFEREBCES " + MoviesEntry.TABLE_NAME +
                 "(" + MovieColumns.COLUMN_MOVIE_ID + "), "
-                + GenresColumns.COLUMN_GENRE_ID + " TEXT NOT NULL " + GenresEntry.TABLE_NAME +
+                + GenresColumns.COLUMN_GENRE_ID + " TEXT NOT NULL REFERENCES " + GenresEntry.TABLE_NAME +
                 "(" + GenresColumns.COLUMN_GENRE_ID + "), "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ", " + GenresColumns.COLUMN_GENRE_ID
                 + ") ON CONFLICT REPLACE)";
