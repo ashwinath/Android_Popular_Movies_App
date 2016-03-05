@@ -29,10 +29,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " + MoviesEntry.TABLE_NAME
                 + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY, "
-                + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL, "
+                + MovieColumns.COLUMN_MOVIE_ID + " INTEGER NOT NULL, "
                 + MovieColumns.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, "
                 + MovieColumns.COLUMN_MOVIE_OVERVIEW + "TEXT, "
-                + MovieColumns.COLUMN_MOVIE_GENRE_IDS + "TEXT, "
                 + MovieColumns.COLUMN_MOVIE_POPULARITY + "REAL, "
                 + MovieColumns.COLUMN_MOVIE_VOTE_COUNT + "INTEGER, "
                 + MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE + "REAL, "
@@ -46,7 +45,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL REFERENCES " + MoviesEntry.TABLE_NAME +
                 "(" + MovieColumns.COLUMN_MOVIE_ID + "), "
-                + GenresColumns.COLUMN_GENRE_ID + " TEXT NOT NULL REFERENCES " + GenresEntry.TABLE_NAME +
+                + GenresColumns.COLUMN_GENRE_ID + " INTEGER NOT NULL REFERENCES " + GenresEntry.TABLE_NAME +
                 "(" + GenresColumns.COLUMN_GENRE_ID + "), "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ", " + GenresColumns.COLUMN_GENRE_ID
                 + ") ON CONFLICT REPLACE)";

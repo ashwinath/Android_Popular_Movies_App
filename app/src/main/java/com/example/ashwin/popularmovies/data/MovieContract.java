@@ -35,7 +35,6 @@ public final class MovieContract {
         String COLUMN_MOVIE_ID = "movie_id";
         String COLUMN_MOVIE_TITLE = "movie_title";
         String COLUMN_MOVIE_OVERVIEW = "movie_overview";
-        String COLUMN_MOVIE_GENRE_IDS = "movie_genre_ids"; // this is an taken as an array from JSON
         String COLUMN_MOVIE_POPULARITY = "movie_popularity";
         String COLUMN_MOVIE_VOTE_COUNT = "movie_vote_count";
         String COLUMN_MOVIE_VOTE_AVERAGE = "movie_vote_average";
