@@ -41,9 +41,10 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + MovieColumns.COLUMN_MOVIE_FAVOURITED + "INTEGER NOT NULL DEFAULT 0, "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE)";
 
+        // not sure if im going to use this table
         final String SQL_CREATE_MOVIE_GENRES_TABLE = "CREATE TABLE " + MoviesEntry.TABLE_NAME_MOVIE_GENRES
-                + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-                + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL REFEREBCES " + MoviesEntry.TABLE_NAME +
+                + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL REFERENCES " + MoviesEntry.TABLE_NAME +
                 "(" + MovieColumns.COLUMN_MOVIE_ID + "), "
                 + GenresColumns.COLUMN_GENRE_ID + " TEXT NOT NULL REFERENCES " + GenresEntry.TABLE_NAME +
                 "(" + GenresColumns.COLUMN_GENRE_ID + "), "
