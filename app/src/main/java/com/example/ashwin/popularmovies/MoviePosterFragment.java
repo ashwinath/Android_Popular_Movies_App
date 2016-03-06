@@ -1,13 +1,18 @@
 package com.example.ashwin.popularmovies;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,12 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,11 +34,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Vector;
 
-public class MoviePosterFragment extends Fragment {
-    private ImageAdapter gridViewAdapter;
+public class MoviePosterFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+//    private ImageAdapter gridViewAdapter;
+
+    private MovieAdapter mMovieAdapter;
+    private static final int MOVIE_LOADER = 0;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -77,30 +81,23 @@ public class MoviePosterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-        gridViewAdapter = new ImageAdapter(getActivity());
-        gridview.setAdapter(gridViewAdapter);
+        gridview.setAdapter(mMovieAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                // Put Poster into DetailActivity
-                Uri posterUri = Uri.parse(gridViewAdapter.getUriList().get(position));
-
-                // Put words into DetailActivity
-                String movieDetails = (gridViewAdapter.getMovieStr()).get(position);
-                String ratingDetails = (gridViewAdapter.getRatingStr()).get(position);
-                String synopsisDetails = (gridViewAdapter.getSynopsisStr()).get(position);
-                String releaseDateDetails = (gridViewAdapter.getReleaseDateStr()).get(position);
-
-                // Create the intent
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("imageUri", posterUri);
-                intent.putExtra(Intent.EXTRA_TEXT, movieDetails + "\nRating: " + ratingDetails
-                        + "\nRelease Date: " + releaseDateDetails + "\nSynopsis: " + synopsisDetails);
-                startActivity(intent);
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if (cursor != null) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            .setData(MovieContract.MoviesEntry.buildMovieUri(
+                                    cursor.getString(COL_MOVIE_ID)));
+                    startActivity(intent);
+                }
             }
         });
         return rootView;
@@ -117,79 +114,6 @@ public class MoviePosterFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class ImageAdapter extends BaseAdapter {
-        private Context mContext;
-        private ArrayList<String> mThumbUris;
-        private String drawablePrefix;
-        private ArrayList<String> movieStr = new ArrayList<>();
-        private ArrayList<String> ratingStr = new ArrayList<>();
-        private ArrayList<String> synopsisStr = new ArrayList<>();
-        private ArrayList<String> releaseDateStr = new ArrayList<>();
-
-        private ArrayList<String> getReleaseDateStr() {
-            return releaseDateStr;
-        }
-
-        private ArrayList<String> getMovieStr() {
-            return movieStr;
-        }
-
-        private ArrayList<String> getRatingStr() {
-            return ratingStr;
-        }
-
-        private ArrayList<String> getSynopsisStr() {
-            return synopsisStr;
-        }
-
-        public ImageAdapter(Context c) {
-            mContext = c;
-            String packName = mContext.getPackageName();
-            drawablePrefix = "android.resource://" + packName;
-
-            ArrayList<String> uriPaths = new ArrayList<>();
-            // not sure
-            mThumbUris = uriPaths;
-        }
-
-        public int getCount() {
-            return mThumbUris.size();
-        }
-
-        public Object getItem(int position) {
-            return mThumbUris.get(position);
-        }
-
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        // create a new ImageView for each item referenced by the Adapter
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
-            if (convertView == null) {
-                imageView = new ImageView(mContext);
-            } else {
-                imageView = (ImageView) convertView;
-            }
-
-            Uri imgUri = Uri.parse(mThumbUris.get(position));
-
-            Picasso.with(getContext())
-                    .load(imgUri) // just put website inside
-                    .placeholder(R.raw.placeholder)
-                    .into(imageView);
-            imageView.setAdjustViewBounds(true);
-
-            return imageView;
-        }
-
-        public ArrayList<String> getUriList() {
-            return mThumbUris;
-        }
-
-    }
-
     public void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -197,10 +121,40 @@ public class MoviePosterFragment extends Fragment {
         movieTask.execute(sortby);
     }
 
+    // KIV
     @Override
     public void onStart() {
         super.onStart();
         updateMovie();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder = MovieContract.MoviesEntry._ID + " ASC";
+        return new CursorLoader(getActivity(),
+                MovieContract.MoviesEntry.CONTENT_URI,
+                MOVIE_COLUMNS,
+                null,
+                null,
+                sortOrder);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mMovieAdapter.swapCursor(cursor);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieAdapter.swapCursor(null);
     }
 
     // insert async task here with parsing JSON
@@ -365,27 +319,6 @@ public class MoviePosterFragment extends Fragment {
                 e.printStackTrace();
             }
 
-        }
-
-        @Override
-        protected void onPostExecute(String[][] result) {
-            if (result != null) {
-                ArrayList<String> uriPaths = gridViewAdapter.getUriList();
-                uriPaths.clear();
-                ArrayList<String> movieStr = gridViewAdapter.getMovieStr();
-                ArrayList<String> ratingStr = gridViewAdapter.getRatingStr();
-                ArrayList<String> synopsisStr = gridViewAdapter.getSynopsisStr();
-                ArrayList<String> releaseDateStr = gridViewAdapter.getReleaseDateStr();
-                for (int i = 0; i < result[1].length; ++i) {
-                    String url = "http://image.tmdb.org/t/p/w185" + result[0][i];
-                    uriPaths.add(url);
-                    movieStr.add(result[1][i]);
-                    ratingStr.add(result[2][i]);
-                    synopsisStr.add(result[3][i]);
-                    releaseDateStr.add(result[4][i]);
-                }
-                gridViewAdapter.notifyDataSetChanged();
-            }
         }
     }
 }
