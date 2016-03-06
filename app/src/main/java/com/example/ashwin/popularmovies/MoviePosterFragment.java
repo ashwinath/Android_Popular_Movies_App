@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.text.TextUtils;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
@@ -34,11 +33,37 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 public class MoviePosterFragment extends Fragment {
     private ImageAdapter gridViewAdapter;
+
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
+            MovieContract.MovieColumns.COLUMN_MOVIE_ID,
+            MovieContract.MovieColumns.COLUMN_MOVIE_TITLE,
+            MovieContract.MovieColumns.COLUMN_MOVIE_OVERVIEW,
+            MovieContract.MovieColumns.COLUMN_MOVIE_GENRES,
+            MovieContract.MovieColumns.COLUMN_MOVIE_POPULARITY,
+            MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_COUNT,
+            MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE,
+            MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
+            MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
+            MovieContract.MovieColumns.COLUMN_MOVIE_FAVOURITED
+    };
+
+    // these indices are tied to the MOVIE_COLUMNS String
+    static final int COL_MOVIE_TABLE_ID = 0;
+    static final int COL_MOVIE_ID = 1;
+    static final int COL_MOVIE_TITLE = 2;
+    static final int COL_MOVIE_OVERVIEW = 3;
+    static final int COL_MOVIE_GENRES = 4;
+    static final int COL_MOVIE_POPULARITY = 5;
+    static final int COL_MOVIE_VOTE_COUNT = 6;
+    static final int COL_MOVIE_VOTE_AVERAGE = 7;
+    static final int COL_MOVIE_POSTER_PATH = 8;
+    static final int COL_MOVIE_BACKDROP_PATH = 9;
+    static final int COLUMN_MOVIE_FAVOURITED = 10;
 
     public MoviePosterFragment() {
     }
@@ -53,6 +78,7 @@ public class MoviePosterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
         gridViewAdapter = new ImageAdapter(getActivity());
         gridview.setAdapter(gridViewAdapter);
