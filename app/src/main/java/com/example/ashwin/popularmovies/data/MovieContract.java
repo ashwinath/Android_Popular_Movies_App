@@ -12,7 +12,7 @@ public final class MovieContract {
     /**
      * Uri builder helper.
      */
-    public static final String CONTENT_AUTHORITY = "com.example.ashwin.popularmovies.app";
+    public static final String CONTENT_AUTHORITY = "com.example.ashwin.popularmovies";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_MOVIES = "movies";
 

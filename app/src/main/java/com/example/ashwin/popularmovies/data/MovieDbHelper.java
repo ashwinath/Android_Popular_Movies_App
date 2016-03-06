@@ -25,14 +25,14 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MovieColumns.COLUMN_MOVIE_ID + " TEXT NOT NULL, "
                 + MovieColumns.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, "
-                + MovieColumns.COLUMN_MOVIE_OVERVIEW + "TEXT, "
-                + MovieColumns.COLUMN_MOVIE_POPULARITY + "REAL, "
-                + MovieColumns.COLUMN_MOVIE_GENRES + "TEXT, "
-                + MovieColumns.COLUMN_MOVIE_VOTE_COUNT + "INTEGER, "
-                + MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE + "REAL, "
-                + MovieColumns.COLUMN_MOVIE_POSTER_PATH + "TEXT, "
-                + MovieColumns.COLUMN_MOVIE_BACKDROP_PATH + "TEXT, "
-                + MovieColumns.COLUMN_MOVIE_FAVOURITED + "INTEGER NOT NULL DEFAULT 0, "
+                + MovieColumns.COLUMN_MOVIE_OVERVIEW + " TEXT, "
+                + MovieColumns.COLUMN_MOVIE_GENRES + " TEXT, "
+                + MovieColumns.COLUMN_MOVIE_POPULARITY + " REAL, "
+                + MovieColumns.COLUMN_MOVIE_VOTE_COUNT + " INTEGER, "
+                + MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE + " REAL, "
+                + MovieColumns.COLUMN_MOVIE_POSTER_PATH + " TEXT, "
+                + MovieColumns.COLUMN_MOVIE_BACKDROP_PATH + " TEXT, "
+                + MovieColumns.COLUMN_MOVIE_FAVOURITED + " INTEGER NOT NULL DEFAULT 0, "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE)";
 
         db.execSQL(SQL_CREATE_MOVIES_TABLE);

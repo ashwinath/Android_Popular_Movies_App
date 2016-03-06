@@ -7,7 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.CancellationSignal;
+import android.util.Log;
 
 import com.example.ashwin.popularmovies.data.MovieContract.*;
 

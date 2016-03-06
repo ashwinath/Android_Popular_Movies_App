@@ -250,6 +250,7 @@ public class MoviePosterFragment extends Fragment {
             }
 
             try {
+                getMovieDataFromJsonDb(movieJsonStr);
                 return getMovieDataFromJson (movieJsonStr, movieNum);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
@@ -303,11 +304,11 @@ public class MoviePosterFragment extends Fragment {
                     // genres might have a little problem. might want to comma seperate them
                     String movieGenres = "";
                     JSONArray genreArray = movieObject.getJSONArray("genre_ids");
-                    for (int j = 0; j < genreArray.length(); ++j) {
-                        movieGenres += genreArray.getJSONObject(i).toString();
-                        if (j < genreArray.length() - 1)
-                            movieGenres += ",";
-                    }
+//                    for (int j = 0; j < genreArray.length(); ++j) {
+//                        movieGenres += genreArray.getJSONObject(i).toString();
+//                        if (j < genreArray.length() - 1)
+//                            movieGenres += ",";
+//                    }
 
                     // add into content values vector
                     ContentValues contentValues = new ContentValues();
