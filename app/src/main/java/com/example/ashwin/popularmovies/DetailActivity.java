@@ -74,7 +74,7 @@ public class DetailActivity extends AppCompatActivity {
                         .networkPolicy(NetworkPolicy.OFFLINE)
                         .into(imageview);
                 // Collect the rest of the tag
-                // could separate the tags in MainActivityFragment
+                // could separate the tags in MoviePosterFragment
                 movieString = intent.getStringExtra(intent.EXTRA_TEXT);
                 ((TextView) rootView.findViewById(R.id.detail_text))
                         .setText(movieString);

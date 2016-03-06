@@ -1,5 +1,6 @@
 package com.example.ashwin.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.text.TextUtils;
 
+import com.example.ashwin.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -31,11 +34,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
-public class MainActivityFragment extends Fragment {
+public class MoviePosterFragment extends Fragment {
     private ImageAdapter gridViewAdapter;
 
-    public MainActivityFragment() {
+    public MoviePosterFragment() {
     }
 
     @Override
@@ -255,7 +260,8 @@ public class MainActivityFragment extends Fragment {
 
         // try using multi dimensional array instead.
         // one for poster image and the other for descriptions
-        private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum) throws JSONException {
+        private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum)
+                throws JSONException {
             String[][] resultStr = new String[5][movieNum];
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray resultArray = movieJson.getJSONArray("results");
@@ -274,6 +280,64 @@ public class MainActivityFragment extends Fragment {
                 resultStr[0][i] = posterPath;
             }
             return resultStr;
+        }
+
+        private void getMovieDataFromJsonDb (String movieJsonStr)
+                throws JSONException{
+            try {
+                JSONObject movieJson = new JSONObject(movieJsonStr);
+                JSONArray resultArray = movieJson.getJSONArray("results");
+                // Store movie information into vectors first
+                Vector<ContentValues> cVVector = new Vector<ContentValues>(resultArray.length());
+                for (int i = 0; i < resultArray.length(); i++) {
+                    JSONObject movieObject = resultArray.getJSONObject(i);
+                    // data to be collected from json
+                    String movieId = movieObject.getString("id");
+                    String movieTitle = movieObject.getString("title");
+                    String movieOverview = movieObject.getString("overview");
+                    double moviePopularity = movieObject.getDouble("popularity");
+                    int movieVoteCount = movieObject.getInt("vote_count");
+                    double movieVoteAverage = movieObject.getDouble("vote_average");
+                    String moviePosterPath = movieObject.getString("poster_path");
+                    String movieBackdropPath = movieObject.getString("backdrop_path");
+                    // genres might have a little problem. might want to comma seperate them
+                    String movieGenres = "";
+                    JSONArray genreArray = movieObject.getJSONArray("genre_ids");
+                    for (int j = 0; j < genreArray.length(); ++j) {
+                        movieGenres += genreArray.getJSONObject(i).toString();
+                        if (j < genreArray.length() - 1)
+                            movieGenres += ",";
+                    }
+
+                    // add into content values vector
+                    ContentValues contentValues = new ContentValues();
+
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_ID, movieId);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_TITLE, movieTitle);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_OVERVIEW, movieOverview);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_GENRES, movieGenres);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_POPULARITY, moviePopularity);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_COUNT, movieVoteCount);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE, movieVoteAverage);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH, moviePosterPath);
+                    contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH, movieBackdropPath);
+
+                    // now add into vector
+                    cVVector.add(contentValues);
+                }
+
+                // BULK add everything into SQL database
+                if (cVVector.size() > 0) {
+                    ContentValues[] contentValues = cVVector.toArray(new ContentValues[cVVector.size()]);
+                    Uri uri = MovieContract.MoviesEntry.CONTENT_URI;
+                    getContext().getContentResolver().bulkInsert(uri, contentValues);
+                }
+                Log.d(LOG_TAG, "JSON parsing complete. " + cVVector.size() + " Inserted");
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+
         }
 
         @Override
