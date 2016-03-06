@@ -12,7 +12,7 @@ import android.os.CancellationSignal;
 import com.example.ashwin.popularmovies.data.MovieContract.*;
 
 
-public class MovieProvider extends ContentProvider {
+public final class MovieProvider extends ContentProvider {
     private static final String LOG_TAG = MovieProvider.class.getSimpleName();
     // the URI matcher used by this content provider
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -73,7 +73,7 @@ public class MovieProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder, CancellationSignal cancellationSignal) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case MOVIE:
