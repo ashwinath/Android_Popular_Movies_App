@@ -12,10 +12,10 @@ public class MovieProvider extends ContentProvider{
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mMovieHelper;
 
-    static final int GENRES = 100;
+//    static final int GENRES = 100;
     static final int MOVIE = 200;
     static final int MOVIE_ID = 201;
-    static final int MOVIE_ID_GENRES = 202;
+//    static final int MOVIE_ID_GENRES = 202;
 
     static UriMatcher buildUriMatcher() {
         // initialise matcher with NO_MATCH (Common practice)
@@ -23,11 +23,11 @@ public class MovieProvider extends ContentProvider{
         final String AUTHORITY = MovieContract.CONTENT_AUTHORITY;
 
         // use addURI to match the types
-        matcher.addURI(AUTHORITY, MovieContract.PATH_GENRES, GENRES);
+//        matcher.addURI(AUTHORITY, MovieContract.PATH_GENRES, GENRES);
         matcher.addURI(AUTHORITY, MovieContract.PATH_MOVIES, MOVIE);
         matcher.addURI(AUTHORITY, MovieContract.PATH_MOVIES + "/#", MOVIE_ID);
         // not sure about this one
-        matcher.addURI(AUTHORITY, MovieContract.PATH_MOVIES + "/#" + MovieContract.PATH_GENRES, MOVIE_ID_GENRES);
+//        matcher.addURI(AUTHORITY, MovieContract.PATH_MOVIES + "/#" + MovieContract.PATH_GENRES, MOVIE_ID_GENRES);
 
         return matcher;
     }
@@ -43,14 +43,14 @@ public class MovieProvider extends ContentProvider{
         final int match = sUriMatcher.match(uri);
 
         switch(match) {
-            case GENRES:
-                return GenresEntry.CONTENT_TYPE;
+//            case GENRES:
+//                return GenresEntry.CONTENT_TYPE;
             case MOVIE:
                 return MoviesEntry.CONTENT_TYPE;
             case MOVIE_ID:
                 return MoviesEntry.CONTENT_ITEM_TYPE;
-            case MOVIE_ID_GENRES:
-                return GenresEntry.CONTENT_TYPE;
+//            case MOVIE_ID_GENRES:
+//                return GenresEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri);
         }
