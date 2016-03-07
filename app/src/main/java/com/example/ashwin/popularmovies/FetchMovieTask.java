@@ -49,9 +49,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                     .appendPath("movie")
                     .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
                     .appendQueryParameter("api_key", "***REMOVED***");
-            if (params[0].equals(mContext.getString(R.string.pref_sort_user_rating))) {
-                builder.appendQueryParameter("primary_release_year", "2015");
-            }
             String website = builder.build().toString();
             Log.v(LOG_TAG, website);
             URL url = new URL(website);
