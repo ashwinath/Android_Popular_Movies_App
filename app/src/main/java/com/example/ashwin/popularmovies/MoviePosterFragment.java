@@ -23,8 +23,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
-import com.example.ashwin.popularmovies.data.MovieDbHelper;
-import com.example.ashwin.popularmovies.data.MovieProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;

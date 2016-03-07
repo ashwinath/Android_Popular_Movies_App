@@ -13,10 +13,6 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-
-/**
- * Created by ashwin on 7/3/2016.
- */
 public class MovieAdapter extends CursorAdapter {
 
     private final String LOG_TAG = MovieAdapter.class.getSimpleName();
@@ -46,6 +42,5 @@ public class MovieAdapter extends CursorAdapter {
                 .load(getPosterImageString(cursor))
                 .placeholder(R.raw.placeholder)
                 .into(imageView);
-//        imageView.setAdjustViewBounds(true);
     }
 }
