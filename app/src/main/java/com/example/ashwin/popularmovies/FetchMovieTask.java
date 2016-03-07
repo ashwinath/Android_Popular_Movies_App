@@ -50,7 +50,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                     .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
                     .appendQueryParameter("api_key", "***REMOVED***");
             String website = builder.build().toString();
-            Log.v(LOG_TAG, website);
             URL url = new URL(website);
 
             // Create the request to themoviedb and open connection
