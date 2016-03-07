@@ -11,20 +11,34 @@
 
         <ImageView
             android:id="@+id/backdrop_image"
+            android:adjustViewBounds="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:padding="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/poster_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
             <LinearLayout
-                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/poster_image"
+                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="left"
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -49,6 +63,8 @@
 
         <TextView
             android:id="@+id/overview_text"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

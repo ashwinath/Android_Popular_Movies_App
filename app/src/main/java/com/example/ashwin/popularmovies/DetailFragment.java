@@ -105,7 +105,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         if (!data.moveToFirst())
             return;
         String backDropUrl = "http://image.tmdb.org/t/p/w342" + data.getString(COL_MOVIE_BACKDROP_PATH);
-        String posterUrl = "http://image.tmdb.org/t/p/w342" + data.getString(COL_MOVIE_POSTER_PATH);
+        String posterUrl = "http://image.tmdb.org/t/p/w185" + data.getString(COL_MOVIE_POSTER_PATH);
         String title = data.getString(COL_MOVIE_TITLE);
         String date = Utility.formatDate(data.getString(COL_MOVIE_RELEASE_DATE));
         String rating = Utility.formatRatings(data.getDouble(COL_MOVIE_VOTE_AVERAGE));
