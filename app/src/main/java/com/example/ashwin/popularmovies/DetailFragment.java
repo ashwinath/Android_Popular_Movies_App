@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
@@ -38,6 +37,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private TextView overviewView;
     private TextView youtubeLinkView;
     private TextView reviewView;
+    private NonScrollListView listView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -89,8 +89,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
         youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_button);
-        reviewView = (TextView) rootView.findViewById(R.id.review_view_custom);
-
+        listView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
 
         return rootView;
     }
@@ -170,11 +169,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         try {
             FetchReviewTask fetchReviewTask = new FetchReviewTask(getContext());
             reviewArray = fetchReviewTask.execute(movieId).get();
-            String resultString = "";
-            for (String a: reviewArray) {
-                resultString += a + "\n\n\n";
-            }
-            reviewView.setText(resultString);
+            List<String> list = new ArrayList<>(Arrays.asList(reviewArray));
+            mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
+                    R.id.review_textview,list);
+            listView.setAdapter(mReviewAdapter);
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, String.valueOf(e));
         } catch (ExecutionException e) {
