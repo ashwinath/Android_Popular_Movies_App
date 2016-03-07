@@ -65,7 +65,8 @@ public class Utility {
 
     public static String formatGenres(String genreIds) {
         List<String> genreIdList = Arrays.asList(genreIds.split(","));
-        if (genreIdList.size() == 0)
+        Log.v("Utility", "" + genreIdList.size());
+        if (genreIdList.get(0).equals(""))
             return "";
         String[] genreArray = new String[genreIdList.size()];
         for (int i = 0; i < genreIdList.size(); ++i) {
