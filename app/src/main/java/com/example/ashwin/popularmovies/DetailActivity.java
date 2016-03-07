@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+
 public class DetailActivity extends AppCompatActivity {
 
     @Override

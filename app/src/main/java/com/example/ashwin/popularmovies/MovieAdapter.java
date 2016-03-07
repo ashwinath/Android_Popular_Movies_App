@@ -46,6 +46,6 @@ public class MovieAdapter extends CursorAdapter {
                 .load(getPosterImageString(cursor))
                 .placeholder(R.raw.placeholder)
                 .into(imageView);
-        imageView.setAdjustViewBounds(true);
+//        imageView.setAdjustViewBounds(true);
     }
 }
