@@ -259,13 +259,7 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
                     String moviePosterPath = movieObject.getString("poster_path");
                     String movieBackdropPath = movieObject.getString("backdrop_path");
                     // genres might have a little problem. might want to comma seperate them
-                    String movieGenres = "";
-                    JSONArray genreArray = movieObject.getJSONArray("genre_ids");
-//                    for (int j = 0; j < genreArray.length(); ++j) {
-//                        movieGenres += genreArray.getJSONObject(i).toString();
-//                        if (j < genreArray.length() - 1)
-//                            movieGenres += ",";
-//                    }
+                    String movieGenres = movieObject.getString("genre_ids").replace("]", "").replace("[", "");
 
                     // add into content values vector
                     ContentValues contentValues = new ContentValues();
