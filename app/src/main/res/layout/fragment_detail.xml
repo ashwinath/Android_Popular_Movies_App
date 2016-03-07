@@ -88,9 +88,12 @@
             android:background="@color/dropdown_divider_colour"/>
 
         <TextView
-            android:id="@+id/youtube_view"
+            android:id="@+id/youtube_button"
+            android:clickable="true"
+            android:text="Trailer Link"
             android:padding="16dp"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_xlarge"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

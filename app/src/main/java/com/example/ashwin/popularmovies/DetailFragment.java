@@ -2,6 +2,7 @@ package com.example.ashwin.popularmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -87,8 +88,9 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         ratingView = (TextView) rootView.findViewById(R.id.rating_text);
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
-        youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_view);
+        youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_button);
         reviewView = (TextView) rootView.findViewById(R.id.review_view_custom);
+
 
         return rootView;
     }
@@ -149,8 +151,16 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         // not exactly optimal
         try {
             FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
-            String[] youtube = fetchTrailerTask.execute(movieId).get();
-            youtubeLinkView.setText(youtube[0]);
+            final String[] youtube = fetchTrailerTask.execute(movieId).get();
+            youtubeLinkView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String url = youtube[0];
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                }
+            });
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, String.valueOf(e));
         } catch (ExecutionException e) {
