@@ -24,7 +24,6 @@ public class MovieAdapter extends CursorAdapter {
 
     private String getPosterImageString(Cursor cursor) {
         String posterUrl = "http://image.tmdb.org/t/p/w185" + cursor.getString(MoviePosterFragment.COL_MOVIE_POSTER_PATH);
-        Log.v(LOG_TAG, "Website: " + posterUrl);
         return posterUrl;
     }
 
