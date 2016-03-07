@@ -2,13 +2,12 @@ package com.example.ashwin.popularmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
+
+import java.util.concurrent.ExecutionException;
 
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final int DETAIL_LOADER = 0;
@@ -29,6 +30,9 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private TextView ratingView;
     private TextView genresView;
     private TextView overviewView;
+    private TextView youtubeLinkView;
+    private TextView reviewiAuthorView;
+    private TextView reviewContentView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -76,6 +80,9 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         ratingView = (TextView) rootView.findViewById(R.id.rating_text);
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
+        youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_view);
+        reviewiAuthorView = (TextView) rootView.findViewById(R.id.review_author_view);
+        reviewContentView = (TextView) rootView.findViewById(R.id.review_content_view);
         return rootView;
     }
 
@@ -130,6 +137,29 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         ratingView.setText(rating);
         genresView.setText(genres);
         overviewView.setText(overview);
+
+        // other AsyncTask jobs
+        try {
+            FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
+            String[] youtube = fetchTrailerTask.execute(data.getString(COL_MOVIE_ID)).get();
+            youtubeLinkView.setText(youtube[0]);
+        } catch (InterruptedException e) {
+            Log.e(LOG_TAG, String.valueOf(e));
+        } catch (ExecutionException e) {
+            Log.e(LOG_TAG, String.valueOf(e));
+        }
+
+        try {
+            FetchReviewTask fetchReviewTask = new FetchReviewTask(getContext());
+            String[][] reviewArray = fetchReviewTask.execute(data.getString(COL_MOVIE_ID)).get();
+            reviewiAuthorView.setText(reviewArray[0][0]);
+            reviewContentView.setText(reviewArray[0][1]);
+        } catch (InterruptedException e) {
+            Log.e(LOG_TAG, String.valueOf(e));
+        } catch (ExecutionException e) {
+            Log.e(LOG_TAG, String.valueOf(e));
+        }
+
     }
 
     @Override

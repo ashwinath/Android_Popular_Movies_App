@@ -86,5 +86,27 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/dropdown_divider_colour"/>
+
+        <TextView
+            android:id="@+id/youtube_view"
+            android:padding="16dp"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/review_author_view"
+            android:padding="16dp"
+            android:textSize="@dimen/text_size_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/review_content_view"
+            android:padding="16dp"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
