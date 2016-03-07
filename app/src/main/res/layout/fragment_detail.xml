@@ -87,13 +87,10 @@
             android:layout_height="1dp"
             android:background="@color/dropdown_divider_colour"/>
 
-        <TextView
-            android:id="@+id/youtube_button"
+        <com.example.ashwin.popularmovies.NonScrollListView
+            android:id="@+id/youtube_button_list"
             android:clickable="true"
-            android:text="Trailer Link"
             android:padding="16dp"
-            android:textSize="@dimen/text_size_xlarge"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

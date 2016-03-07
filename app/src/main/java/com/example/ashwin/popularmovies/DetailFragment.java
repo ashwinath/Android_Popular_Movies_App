@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,8 +36,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private TextView ratingView;
     private TextView genresView;
     private TextView overviewView;
-    private TextView youtubeLinkView;
-    private TextView reviewView;
+    private NonScrollListView youtubeLinkListView;
     private NonScrollListView listView;
 
     private static final String[] MOVIE_COLUMNS = {
@@ -71,6 +71,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
     // review array stuff
     ArrayAdapter<String> mReviewAdapter;
+    ArrayAdapter<String> mYoutubeAdapter;
     String[] reviewArray;
 
 
@@ -88,7 +89,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         ratingView = (TextView) rootView.findViewById(R.id.rating_text);
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
-        youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_button);
+        youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
         listView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
 
         return rootView;
@@ -151,10 +152,19 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         try {
             FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
             final String[] youtube = fetchTrailerTask.execute(movieId).get();
-            youtubeLinkView.setOnClickListener(new View.OnClickListener() {
+            String[] trailerNames = new String[youtube.length];
+            for (int i = 0; i < youtube.length; ++i) {
+                trailerNames[i] = "Trailer " + (i+1);
+            }
+            List<String> youtubeList = new ArrayList<>(Arrays.asList(trailerNames));
+            mYoutubeAdapter = new ArrayAdapter<String>(getContext(), R.layout.trailer_linear_layout,
+                    R.id.trailer_text, youtubeList);
+            youtubeLinkListView.setAdapter(mYoutubeAdapter);
+
+            youtubeLinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onClick(View v) {
-                    String url = youtube[0];
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String url = youtube[position];
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     startActivity(intent);
