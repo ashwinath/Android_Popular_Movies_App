@@ -49,7 +49,6 @@ public class FetchTrailerTask extends AsyncTask<String, Void, String[]> {
                     .appendPath("videos")
                     .appendQueryParameter("api_key", "***REMOVED***");
             String website = builder.build().toString();
-            Log.v(LOG_TAG, website);
             URL url = new URL(website);
 
             // Create the request to themoviedb and open connection

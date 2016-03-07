@@ -49,7 +49,6 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
                     .appendPath("reviews")
                     .appendQueryParameter("api_key", "***REMOVED***");
             String website = builder.build().toString();
-            Log.v(LOG_TAG, website);
             URL url = new URL(website);
 
             // Create the request to themoviedb and open connection
