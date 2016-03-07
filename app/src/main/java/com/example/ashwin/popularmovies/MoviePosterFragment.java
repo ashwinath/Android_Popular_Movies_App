@@ -37,7 +37,6 @@ import java.net.URL;
 import java.util.Vector;
 
 public class MoviePosterFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-//    private ImageAdapter gridViewAdapter;
 
     private MovieAdapter mMovieAdapter;
     private static final int MOVIE_LOADER = 0;
