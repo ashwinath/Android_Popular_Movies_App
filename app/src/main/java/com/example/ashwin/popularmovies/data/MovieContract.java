@@ -29,6 +29,7 @@ public final class MovieContract {
         String COLUMN_MOVIE_VOTE_AVERAGE = "movie_vote_average";
         String COLUMN_MOVIE_POSTER_PATH = "movie_poster_path";
         String COLUMN_MOVIE_BACKDROP_PATH = "movie_backdrop_path";
+        String COLUMN_MOVIE_RELEASE_DATE = "movie_release_date";
         String COLUMN_MOVIE_FAVOURITED = "movie_favourited";
     }
 

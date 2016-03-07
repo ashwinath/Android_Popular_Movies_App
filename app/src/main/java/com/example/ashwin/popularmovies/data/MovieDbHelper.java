@@ -32,6 +32,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE + " REAL, "
                 + MovieColumns.COLUMN_MOVIE_POSTER_PATH + " TEXT, "
                 + MovieColumns.COLUMN_MOVIE_BACKDROP_PATH + " TEXT, "
+                + MovieColumns.COLUMN_MOVIE_RELEASE_DATE + " TEXT, "
                 + MovieColumns.COLUMN_MOVIE_FAVOURITED + " INTEGER NOT NULL DEFAULT 0, "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE)";
 

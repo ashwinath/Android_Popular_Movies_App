@@ -125,6 +125,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                 String movieBackdropPath = movieObject.getString("backdrop_path");
                 // genres might have a little problem. might want to comma seperate them
                 String movieGenres = movieObject.getString("genre_ids").replace("]", "").replace("[", "");
+                String movieReleaseDate = movieObject.getString("release_date");
 
                 // add into content values vector
                 ContentValues contentValues = new ContentValues();
@@ -138,6 +139,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                 contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE, movieVoteAverage);
                 contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH, moviePosterPath);
                 contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH, movieBackdropPath);
+                contentValues.put(MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE, movieReleaseDate);
 
                 // now add into vector
                 cVVector.add(contentValues);

@@ -52,6 +52,7 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE,
             MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
+            MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE,
             MovieContract.MovieColumns.COLUMN_MOVIE_FAVOURITED
     };
 
@@ -66,7 +67,8 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     static final int COL_MOVIE_VOTE_AVERAGE = 7;
     static final int COL_MOVIE_POSTER_PATH = 8;
     static final int COL_MOVIE_BACKDROP_PATH = 9;
-    static final int COLUMN_MOVIE_FAVOURITED = 10;
+    static final int COL_MOVIE_RELEASE_DATE = 10;
+    static final int COLUMN_MOVIE_FAVOURITED = 11;
 
     public MoviePosterFragment() {
     }
