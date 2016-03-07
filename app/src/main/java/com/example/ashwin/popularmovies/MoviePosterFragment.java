@@ -23,6 +23,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
+import com.example.ashwin.popularmovies.data.MovieDbHelper;
+import com.example.ashwin.popularmovies.data.MovieProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -231,7 +233,6 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
 
             try {
                 getMovieDataFromJsonDb(movieJsonStr);
-                return getMovieDataFromJson (movieJsonStr, movieNum);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -239,33 +240,12 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
             return null;
         }
 
-        // try using multi dimensional array instead.
-        // one for poster image and the other for descriptions
-        private String[][] getMovieDataFromJson (String movieJsonStr, int movieNum)
-                throws JSONException {
-            String[][] resultStr = new String[5][movieNum];
-            JSONObject movieJson = new JSONObject(movieJsonStr);
-            JSONArray resultArray = movieJson.getJSONArray("results");
-            for (int i = 0, j = 0; i < resultArray.length(); ++i) {
-                // even number = movie data string
-                // odd number = poster path
-                String originalTitle = resultArray.getJSONObject(i).getString("original_title");
-                String overview = resultArray.getJSONObject(i).getString("overview");
-                String userRating = resultArray.getJSONObject(i).getString("vote_average");
-                String posterPath = resultArray.getJSONObject(i).getString("poster_path");
-                String releaseDate = resultArray.getJSONObject(i).getString("release_date");
-                resultStr[1][i] = originalTitle;
-                resultStr[2][i] = userRating;
-                resultStr[3][i] = overview;
-                resultStr[4][i] = releaseDate;
-                resultStr[0][i] = posterPath;
-            }
-            return resultStr;
-        }
-
         private void getMovieDataFromJsonDb (String movieJsonStr)
                 throws JSONException{
             try {
+                String[] selectionArgs = {"nothing"};
+                String selection = "nothing";
+                getContext().getContentResolver().delete(MovieContract.BASE_CONTENT_URI, selection, selectionArgs);
                 JSONObject movieJson = new JSONObject(movieJsonStr);
                 JSONArray resultArray = movieJson.getJSONArray("results");
                 // Store movie information into vectors first

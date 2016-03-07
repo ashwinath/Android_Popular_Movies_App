@@ -8,10 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
 
 /**
  * Created by ashwin on 7/3/2016.
@@ -33,18 +34,18 @@ public class MovieAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_main, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.grid_view_movie, parent, false);
+
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ImageView imageView = new ImageView(context);
+        ImageView imageView = (ImageView) view.findViewById(R.id.movie_poster_main);
         Picasso.with(context)
                 .load(getPosterImageString(cursor))
                 .placeholder(R.raw.placeholder)
                 .into(imageView);
         imageView.setAdjustViewBounds(true);
-        Log.v(LOG_TAG, "this is called");
     }
 }
