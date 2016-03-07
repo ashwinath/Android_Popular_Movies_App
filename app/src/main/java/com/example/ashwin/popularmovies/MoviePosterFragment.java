@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.ashwin.popularmovies.asynctasks.FetchMovieTask;
 import com.example.ashwin.popularmovies.data.MovieContract;
 
 public class MoviePosterFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {

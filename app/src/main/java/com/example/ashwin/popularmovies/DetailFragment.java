@@ -17,8 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ashwin.popularmovies.asynctasks.FetchReviewTask;
-import com.example.ashwin.popularmovies.asynctasks.FetchTrailerTask;
 import com.example.ashwin.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
