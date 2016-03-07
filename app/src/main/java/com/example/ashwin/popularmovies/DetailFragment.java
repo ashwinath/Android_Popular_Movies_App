@@ -11,12 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
@@ -31,8 +36,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private TextView genresView;
     private TextView overviewView;
     private TextView youtubeLinkView;
-    private TextView reviewiAuthorView;
-    private TextView reviewContentView;
+    private TextView reviewView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -64,7 +68,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     static final int COLUMN_MOVIE_FAVOURITED = 11;
 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
-    private String movieString;
+    // review array stuff
+    ArrayAdapter<String> mReviewAdapter;
+    String[] reviewArray;
+
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -81,8 +88,8 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
         youtubeLinkView = (TextView) rootView.findViewById(R.id.youtube_view);
-        reviewiAuthorView = (TextView) rootView.findViewById(R.id.review_author_view);
-        reviewContentView = (TextView) rootView.findViewById(R.id.review_content_view);
+        reviewView = (TextView) rootView.findViewById(R.id.review_view_custom);
+
         return rootView;
     }
 
@@ -118,12 +125,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         String rating = Utility.formatRatings(data.getDouble(COL_MOVIE_VOTE_AVERAGE));
         String genres = Utility.formatGenres(data.getString(COL_MOVIE_GENRES));
         String overview = data.getString(COL_MOVIE_OVERVIEW);
+        String movieId = data.getString(COL_MOVIE_ID);
 
         // backdrop
-            Picasso.with(getContext())
-                    .load(backDropUrl)
-                    .placeholder(R.raw.placeholder)
-                    .into(backDropView);
+        Picasso.with(getContext())
+                .load(backDropUrl)
+                .placeholder(R.raw.placeholder)
+                .into(backDropView);
 
         // poster
         Picasso.with(getContext())
@@ -138,10 +146,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         genresView.setText(genres);
         overviewView.setText(overview);
 
-        // other AsyncTask jobs
+        // not exactly optimal
         try {
             FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
-            String[] youtube = fetchTrailerTask.execute(data.getString(COL_MOVIE_ID)).get();
+            String[] youtube = fetchTrailerTask.execute(movieId).get();
             youtubeLinkView.setText(youtube[0]);
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, String.valueOf(e));
@@ -151,15 +159,17 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
 
         try {
             FetchReviewTask fetchReviewTask = new FetchReviewTask(getContext());
-            String[][] reviewArray = fetchReviewTask.execute(data.getString(COL_MOVIE_ID)).get();
-            reviewiAuthorView.setText(reviewArray[0][0]);
-            reviewContentView.setText(reviewArray[0][1]);
+            reviewArray = fetchReviewTask.execute(movieId).get();
+            String resultString = "";
+            for (String a: reviewArray) {
+                resultString += a + "\n\n\n";
+            }
+            reviewView.setText(resultString);
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, String.valueOf(e));
         } catch (ExecutionException e) {
             Log.e(LOG_TAG, String.valueOf(e));
         }
-
     }
 
     @Override

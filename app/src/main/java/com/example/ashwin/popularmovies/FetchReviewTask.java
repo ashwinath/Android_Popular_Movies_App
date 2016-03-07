@@ -19,7 +19,7 @@ import java.net.URL;
 /**
  * Created by ashwin on 7/3/2016.
  */
-public class FetchReviewTask extends AsyncTask<String, Void, String[][]> {
+public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
@@ -28,7 +28,7 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[][]> {
         mContext = context;
     }
 
-    protected String[][] doInBackground(String... params) {
+    protected String[] doInBackground(String... params) {
         if (params.length == 0) {
             return null;
         }
@@ -101,16 +101,14 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[][]> {
         return null;
     }
 
-    private String[][] getReviewArray(String reviewJsonStr)
+    private String[] getReviewArray(String reviewJsonStr)
             throws JSONException {
         try {
             JSONObject reviewJson = new JSONObject(reviewJsonStr);
             JSONArray resultArray = reviewJson.getJSONArray("results");
-            String[][] reviewArray = new String[resultArray.length()][2];
-            // multidimen array. left [] = group, right [] 0= author, 1=comment
+            String[] reviewArray = new String[resultArray.length()];
             for (int i = 0; i < resultArray.length(); i++) {
-                reviewArray[i][0] = resultArray.getJSONObject(i).getString("author");
-                reviewArray[i][1] = resultArray.getJSONObject(i).getString("content");
+                reviewArray[i] = resultArray.getJSONObject(i).getString("content");
             }
             return reviewArray;
         } catch (JSONException e) {
