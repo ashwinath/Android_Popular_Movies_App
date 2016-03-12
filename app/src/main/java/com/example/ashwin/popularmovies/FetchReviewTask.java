@@ -3,6 +3,7 @@ package com.example.ashwin.popularmovies;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
-    public AsyncResponse delegate = null;
+    public ReviewAsyncResponse delegate = null;
 
     public FetchReviewTask(Context context) {
         mContext = context;
@@ -101,6 +102,7 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
+    @Nullable
     private String[] getReviewArray(String reviewJsonStr)
             throws JSONException {
         try {
@@ -120,10 +122,10 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
 
     @Override
     protected void onPostExecute(String[] result) {
-        delegate.processFinish(result);
+        delegate.reviewProcessFinish(result);
     }
 
-    public interface AsyncResponse {
-        void processFinish(String[] output);
+    public interface ReviewAsyncResponse {
+        void reviewProcessFinish(String[] output);
     }
 }
