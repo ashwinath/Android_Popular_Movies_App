@@ -23,6 +23,7 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
+    public AsyncResponse delegate = null;
 
     public FetchReviewTask(Context context) {
         mContext = context;
@@ -115,5 +116,14 @@ public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(String[] result) {
+        delegate.processFinish(result);
+    }
+
+    public interface AsyncResponse {
+        void processFinish(String[] output);
     }
 }

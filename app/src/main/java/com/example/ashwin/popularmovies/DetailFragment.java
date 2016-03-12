@@ -25,8 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
+public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>, FetchReviewTask.AsyncResponse {
     private static final int DETAIL_LOADER = 0;
+    boolean hasReviewAsyncTasked = false;
 
     // Views
     private ImageView backDropView;
@@ -72,8 +73,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     // review array stuff
     ArrayAdapter<String> mReviewAdapter;
     ArrayAdapter<String> mYoutubeAdapter;
-    String[] reviewArray;
-
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -92,7 +91,16 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
         listView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
 
+
         return rootView;
+    }
+
+    @Override
+    public void processFinish(String[] output) {
+        List<String> list = new ArrayList<>(Arrays.asList(output));
+        mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
+                R.id.review_textview,list);
+        listView.setAdapter(mReviewAdapter);
     }
 
     @Override
@@ -148,46 +156,45 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         genresView.setText(genres);
         overviewView.setText(overview);
 
+        // prevent it from executing it again once it has loaded
+        if (!hasReviewAsyncTasked) {
+            FetchReviewTask asyncTask = new FetchReviewTask(getContext());
+            // set delegate/listener back to this class
+            asyncTask.delegate = this;
+
+            // execute FetchReviewTask
+            asyncTask.execute(movieId);
+            hasReviewAsyncTasked = true;
+        }
+
         // not exactly optimal
-        try {
-            FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
-            final String[] youtube = fetchTrailerTask.execute(movieId).get();
-            String[] trailerNames = new String[youtube.length];
-            for (int i = 0; i < youtube.length; ++i) {
-                trailerNames[i] = "Trailer " + (i+1);
-            }
-            List<String> youtubeList = new ArrayList<>(Arrays.asList(trailerNames));
-            mYoutubeAdapter = new ArrayAdapter<String>(getContext(), R.layout.trailer_linear_layout,
-                    R.id.trailer_text, youtubeList);
-            youtubeLinkListView.setAdapter(mYoutubeAdapter);
+//        try {
+//            FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
+//            final String[] youtube = fetchTrailerTask.execute(movieId).get();
+//            String[] trailerNames = new String[youtube.length];
+//            for (int i = 0; i < youtube.length; ++i) {
+//                trailerNames[i] = "Trailer " + (i+1);
+//            }
+//            List<String> youtubeList = new ArrayList<>(Arrays.asList(trailerNames));
+//            mYoutubeAdapter = new ArrayAdapter<String>(getContext(), R.layout.trailer_linear_layout,
+//                    R.id.trailer_text, youtubeList);
+//            youtubeLinkListView.setAdapter(mYoutubeAdapter);
+//
+//            youtubeLinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    String url = youtube[position];
+//                    Intent intent = new Intent(Intent.ACTION_VIEW);
+//                    intent.setData(Uri.parse(url));
+//                    startActivity(intent);
+//                }
+//            });
+//        } catch (InterruptedException e) {
+//            Log.e(LOG_TAG, String.valueOf(e));
+//        } catch (ExecutionException e) {
+//            Log.e(LOG_TAG, String.valueOf(e));
+//        }
 
-            youtubeLinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String url = youtube[position];
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    startActivity(intent);
-                }
-            });
-        } catch (InterruptedException e) {
-            Log.e(LOG_TAG, String.valueOf(e));
-        } catch (ExecutionException e) {
-            Log.e(LOG_TAG, String.valueOf(e));
-        }
-
-        try {
-            FetchReviewTask fetchReviewTask = new FetchReviewTask(getContext());
-            reviewArray = fetchReviewTask.execute(movieId).get();
-            List<String> list = new ArrayList<>(Arrays.asList(reviewArray));
-            mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
-                    R.id.review_textview,list);
-            listView.setAdapter(mReviewAdapter);
-        } catch (InterruptedException e) {
-            Log.e(LOG_TAG, String.valueOf(e));
-        } catch (ExecutionException e) {
-            Log.e(LOG_TAG, String.valueOf(e));
-        }
     }
 
     @Override
