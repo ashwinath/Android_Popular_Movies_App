@@ -189,6 +189,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         overviewView.setText(overview);
 
         // prevent it from executing it again once it has loaded
+        if (!hasTrailerAsyncTasked) {
+            FetchTrailerTask trailerAsyncTask = new FetchTrailerTask(getContext());
+            trailerAsyncTask.delegate = this;
+            trailerAsyncTask.execute(movieId);
+            hasTrailerAsyncTasked = true;
+        }
+
         if (!hasReviewAsyncTasked) {
             FetchReviewTask reviewAsyncTask = new FetchReviewTask(getContext());
             // set delegate/listener back to this class
@@ -200,14 +207,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             // ensure that it does not load again
             hasReviewAsyncTasked = true;
         }
-
-        if (!hasTrailerAsyncTasked) {
-            FetchTrailerTask trailerAsyncTask = new FetchTrailerTask(getContext());
-            trailerAsyncTask.delegate = this;
-            trailerAsyncTask.execute(movieId);
-            hasTrailerAsyncTasked = true;
-        }
-
     }
 
     @Override
