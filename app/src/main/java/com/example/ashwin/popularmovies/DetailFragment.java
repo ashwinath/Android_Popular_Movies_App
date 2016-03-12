@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,6 +161,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             return;
         String backDropUrl = "http://image.tmdb.org/t/p/w342" + data.getString(COL_MOVIE_BACKDROP_PATH);
         String posterUrl = "http://image.tmdb.org/t/p/w185" + data.getString(COL_MOVIE_POSTER_PATH);
+        Log.v(LOG_TAG, backDropUrl);
         String title = data.getString(COL_MOVIE_TITLE);
         String date = Utility.formatDate(data.getString(COL_MOVIE_RELEASE_DATE));
         String rating = Utility.formatRatings(data.getDouble(COL_MOVIE_VOTE_AVERAGE));
@@ -170,13 +172,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         // backdrop
         Picasso.with(getContext())
                 .load(backDropUrl)
-                .placeholder(R.raw.placeholder)
+                .placeholder(R.raw.placeholder_backdrop)
                 .into(backDropView);
 
         // poster
         Picasso.with(getContext())
                 .load(posterUrl)
-                .placeholder(R.raw.placeholder)
+                .placeholder(R.raw.placeholder_backdrop)
                 .into(posterView);
 
         // other texts

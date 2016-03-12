@@ -38,7 +38,7 @@ public class MovieAdapter extends CursorAdapter {
         ImageView imageView = (ImageView) view.findViewById(R.id.movie_poster_main);
         Picasso.with(context)
                 .load(getPosterImageString(cursor))
-                .placeholder(R.raw.placeholder)
+                .placeholder(R.raw.placeholder_poster)
                 .into(imageView);
     }
 }
