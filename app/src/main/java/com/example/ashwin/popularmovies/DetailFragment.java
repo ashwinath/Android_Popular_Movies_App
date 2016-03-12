@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +21,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>, FetchReviewTask.AsyncResponse {
+public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
+        FetchReviewTask.ReviewAsyncResponse, FetchTrailerTask.TrailerAsyncResponse {
     private static final int DETAIL_LOADER = 0;
     boolean hasReviewAsyncTasked = false;
+    boolean hasTrailerAsyncTasked = false;
 
     // Views
     private ImageView backDropView;
@@ -95,12 +96,41 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         return rootView;
     }
 
+    /**
+     * used to load the results from FetchReviewTask
+     */
     @Override
-    public void processFinish(String[] output) {
+    public void reviewProcessFinish(String[] output) {
         List<String> list = new ArrayList<>(Arrays.asList(output));
         mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
                 R.id.review_textview,list);
         listView.setAdapter(mReviewAdapter);
+    }
+
+    /**
+     * used to load the results from FetchTrailerTask
+     */
+    @Override
+    public void trailerProcessFinish(List<String> output) {
+        String[] trailerNames = new String[output.size()];
+        for (int i = 0; i < output.size(); ++i) {
+            trailerNames[i] = "Trailer " + (i+1);
+        }
+        List<String> youtubeList = new ArrayList<>(Arrays.asList(trailerNames));
+        mYoutubeAdapter = new ArrayAdapter<>(getContext(), R.layout.trailer_linear_layout,
+                R.id.trailer_text, youtubeList);
+        youtubeLinkListView.setAdapter(mYoutubeAdapter);
+        final List<String> urls = Collections.unmodifiableList(output);
+
+        youtubeLinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String url = urls.get(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -158,42 +188,23 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
 
         // prevent it from executing it again once it has loaded
         if (!hasReviewAsyncTasked) {
-            FetchReviewTask asyncTask = new FetchReviewTask(getContext());
+            FetchReviewTask reviewAsyncTask = new FetchReviewTask(getContext());
             // set delegate/listener back to this class
-            asyncTask.delegate = this;
+            reviewAsyncTask.delegate = this;
 
             // execute FetchReviewTask
-            asyncTask.execute(movieId);
+            reviewAsyncTask.execute(movieId);
+
+            // ensure that it does not load again
             hasReviewAsyncTasked = true;
         }
 
-        // not exactly optimal
-//        try {
-//            FetchTrailerTask fetchTrailerTask = new FetchTrailerTask(getContext());
-//            final String[] youtube = fetchTrailerTask.execute(movieId).get();
-//            String[] trailerNames = new String[youtube.length];
-//            for (int i = 0; i < youtube.length; ++i) {
-//                trailerNames[i] = "Trailer " + (i+1);
-//            }
-//            List<String> youtubeList = new ArrayList<>(Arrays.asList(trailerNames));
-//            mYoutubeAdapter = new ArrayAdapter<String>(getContext(), R.layout.trailer_linear_layout,
-//                    R.id.trailer_text, youtubeList);
-//            youtubeLinkListView.setAdapter(mYoutubeAdapter);
-//
-//            youtubeLinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    String url = youtube[position];
-//                    Intent intent = new Intent(Intent.ACTION_VIEW);
-//                    intent.setData(Uri.parse(url));
-//                    startActivity(intent);
-//                }
-//            });
-//        } catch (InterruptedException e) {
-//            Log.e(LOG_TAG, String.valueOf(e));
-//        } catch (ExecutionException e) {
-//            Log.e(LOG_TAG, String.valueOf(e));
-//        }
+        if (!hasTrailerAsyncTasked) {
+            FetchTrailerTask trailerAsyncTask = new FetchTrailerTask(getContext());
+            trailerAsyncTask.delegate = this;
+            trailerAsyncTask.execute(movieId);
+            hasTrailerAsyncTasked = true;
+        }
 
     }
 

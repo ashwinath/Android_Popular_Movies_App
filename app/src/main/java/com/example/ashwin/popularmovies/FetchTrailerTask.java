@@ -15,20 +15,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by ashwin on 7/3/2016.
  */
-public class FetchTrailerTask extends AsyncTask<String, Void, String[]> {
+public class FetchTrailerTask extends AsyncTask<String, Void, List<String>> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
+    public TrailerAsyncResponse delegate = null;
 
     public FetchTrailerTask (Context context) {
         mContext = context;
     }
 
-    protected String[] doInBackground(String... params) {
+    protected List<String> doInBackground(String... params) {
         if (params.length == 0) {
             return null;
         }
@@ -100,7 +103,7 @@ public class FetchTrailerTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
-    private String[] getTrailerArray(String trailerJsonStr)
+    private List<String> getTrailerArray(String trailerJsonStr)
             throws JSONException {
         try {
             JSONObject trailerJson = new JSONObject(trailerJsonStr);
@@ -110,11 +113,21 @@ public class FetchTrailerTask extends AsyncTask<String, Void, String[]> {
                 trailerUrl[i] = "http://www.youtube.com/watch?v="
                         + resultArray.getJSONObject(i).getString("key");
             }
-            return trailerUrl;
+            List<String> youtubeTrailers = Arrays.asList(trailerUrl);
+            return youtubeTrailers;
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(List<String> result) {
+        delegate.trailerProcessFinish(result);
+    }
+
+    public interface TrailerAsyncResponse {
+        void trailerProcessFinish(List<String> output);
     }
 }
