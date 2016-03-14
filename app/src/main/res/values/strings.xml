@@ -10,4 +10,6 @@
     <string name="pref_sort_label_popularity">Popularity</string>
     <string name="pref_sort_label_user_rating">User Ratings</string>
     <string name="pref_sort_user_rating">vote_average.desc</string>
+    <!-- please insert api key here before compiling-->
+    <string name="tmdb_api_key">APIKEY</string>
 </resources>

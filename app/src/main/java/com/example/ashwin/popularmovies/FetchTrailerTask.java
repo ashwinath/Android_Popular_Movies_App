@@ -42,7 +42,7 @@ public class FetchTrailerTask extends AsyncTask<String, Void, List<String>> {
         // will contain the raw JSON response as a string
         String movieJsonStr = null;
         try {
-            //http://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=***REMOVED***
+            //http://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=**REMOVED**
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("http")
                     .authority("api.themoviedb.org")
@@ -50,7 +50,7 @@ public class FetchTrailerTask extends AsyncTask<String, Void, List<String>> {
                     .appendPath("movie")
                     .appendPath(params[0])
                     .appendPath("videos")
-                    .appendQueryParameter("api_key", "***REMOVED***");
+                    .appendQueryParameter("api_key", mContext.getString(R.string.tmdb_api_key));
             String website = builder.build().toString();
             URL url = new URL(website);
 
