@@ -18,6 +18,13 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 ![Screenshot](http://i.imgur.com/mU2jMM1.png)
 ![Screenshot](http://i.imgur.com/WBNcJOO.png)
 
+## Credits for images
+* http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png
+* https://www.youtube.com/yt/brand/media/image/YouTube-icon-full_color.png
+* https://bytesizemoments.com/wp-content/uploads/2014/04/placeholder.png
+* [The Movie Database](http://www.themoviedb.org/) for the API
+
+
 ## License
 
     Copyright 2016 Ashwin Nath Chatterji
