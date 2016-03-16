@@ -66,9 +66,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                     .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
                     .appendQueryParameter("api_key", mContext.getString(R.string.tmdb_api_key));
 
-            // here we need to get a minimum vote count, value is set to 1000 minimum votes
+            // here we need to get a minimum vote count, value is set to 200 minimum votes
             if (params[0].equals(mContext.getString(R.string.pref_sort_user_rating)))
-                builder.appendQueryParameter("vote_count.gte", "1000");
+                builder.appendQueryParameter("vote_count.gte", "200");
 
             String website = builder.build().toString();
             URL url = new URL(website);
