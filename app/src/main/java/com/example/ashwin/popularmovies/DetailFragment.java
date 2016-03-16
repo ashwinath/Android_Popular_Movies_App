@@ -55,6 +55,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     private TextView ratingView;
     private TextView genresView;
     private TextView overviewView;
+    private TextView reviewHeaderView;
     private NonScrollListView youtubeLinkListView;
     private NonScrollListView listView;
 
@@ -108,7 +109,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
         youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
         listView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
-
+        reviewHeaderView = (TextView) rootView.findViewById(R.id.review_header);
 
         return rootView;
     }
@@ -119,6 +120,8 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     @Override
     public void reviewProcessFinish(String[] output) {
         List<String> list = new ArrayList<>(Arrays.asList(output));
+        if (!list.isEmpty())
+            reviewHeaderView.setText("Reviews");
         mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
                 R.id.review_textview,list);
         listView.setAdapter(mReviewAdapter);
