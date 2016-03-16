@@ -57,7 +57,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     private TextView overviewView;
     private TextView reviewHeaderView;
     private NonScrollListView youtubeLinkListView;
-    private NonScrollListView listView;
+    private NonScrollListView reviewListView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -108,7 +108,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         genresView = (TextView) rootView.findViewById(R.id.genres_text);
         overviewView = (TextView) rootView.findViewById(R.id.overview_text);
         youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
-        listView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
+        reviewListView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
         reviewHeaderView = (TextView) rootView.findViewById(R.id.review_header);
 
         return rootView;
@@ -124,7 +124,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             reviewHeaderView.setText("Reviews");
         mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
                 R.id.review_textview,list);
-        listView.setAdapter(mReviewAdapter);
+        reviewListView.setAdapter(mReviewAdapter);
     }
 
     /**
