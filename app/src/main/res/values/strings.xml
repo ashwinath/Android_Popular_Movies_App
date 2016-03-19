@@ -29,5 +29,5 @@
     <string name="pref_sort_label_upcoming">Upcoming</string>
 
     <!-- please insert api key here before compiling-->
-    <string name="tmdb_api_key">ApiKey</string>
+    <string name="tmdb_api_key">API Key</string>
 </resources>
