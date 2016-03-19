@@ -44,6 +44,8 @@ import java.util.List;
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         FetchReviewTask.ReviewAsyncResponse, FetchTrailerTask.TrailerAsyncResponse {
     private static final int DETAIL_LOADER = 0;
+    FetchTrailerTask trailerAsyncTask;
+    FetchReviewTask reviewAsyncTask;
     boolean hasReviewAsyncTasked = false;
     boolean hasTrailerAsyncTasked = false;
 
@@ -120,11 +122,12 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     @Override
     public void reviewProcessFinish(String[] output) {
         List<String> list = new ArrayList<>(Arrays.asList(output));
-        if (!list.isEmpty())
+        if (!list.isEmpty()) {
             reviewHeaderView.setText("Reviews");
-        mReviewAdapter = new ArrayAdapter<String>(getContext(),R.layout.review_text_view,
-                R.id.review_textview,list);
-        reviewListView.setAdapter(mReviewAdapter);
+            mReviewAdapter = new ArrayAdapter<String>(getContext(), R.layout.review_text_view,
+                    R.id.review_textview, list);
+            reviewListView.setAdapter(mReviewAdapter);
+        }
     }
 
     /**
@@ -208,14 +211,14 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
 
         // prevent it from executing it again once it has loaded
         if (!hasTrailerAsyncTasked) {
-            FetchTrailerTask trailerAsyncTask = new FetchTrailerTask(getContext());
+            trailerAsyncTask = new FetchTrailerTask(getContext());
             trailerAsyncTask.delegate = this;
             trailerAsyncTask.execute(movieId);
             hasTrailerAsyncTasked = true;
         }
 
         if (!hasReviewAsyncTasked) {
-            FetchReviewTask reviewAsyncTask = new FetchReviewTask(getContext());
+            reviewAsyncTask = new FetchReviewTask(getContext());
             // set delegate/listener back to this class
             reviewAsyncTask.delegate = this;
 
@@ -225,6 +228,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             // ensure that it does not load again
             hasReviewAsyncTasked = true;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        reviewAsyncTask.cancel(true);
+        trailerAsyncTask.cancel(true);
     }
 
     @Override
