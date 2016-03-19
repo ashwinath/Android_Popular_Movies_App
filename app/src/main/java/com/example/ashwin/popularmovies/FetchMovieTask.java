@@ -24,6 +24,9 @@ import android.util.Log;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,15 +65,29 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                     .authority("api.themoviedb.org")
                     .appendPath("3")
                     .appendPath("discover")
-                    .appendPath("movie")
-                    .appendQueryParameter("sort_by", params[0]) // or vote_average.desc
-                    .appendQueryParameter("api_key", mContext.getString(R.string.tmdb_api_key));
+                    .appendPath("movie");
+            if (params[0].equals(mContext.getString(R.string.pref_sort_label_upcoming))) {
+                // so here we need to get today's date and 3 weeks from now
+                DateTime todayDt = new DateTime();
+                DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+                String todayDateString = fmt.print(todayDt);
+                builder.appendQueryParameter("primary_release_date.gte", todayDateString);
 
-            // here we need to get a minimum vote count, value is set to 200 minimum votes
-            if (params[0].equals(mContext.getString(R.string.pref_sort_user_rating)))
-                builder.appendQueryParameter("vote_count.gte", "200");
+                // 3 weeks from now
+                DateTime dtPlusTwoWeeks = todayDt.plusWeeks(3);
+                String twoWeeksLaterDate = fmt.print(dtPlusTwoWeeks);
+                builder.appendQueryParameter("primary_release_date.lte", twoWeeksLaterDate);
+            } else {
+                builder.appendQueryParameter("sort_by", params[0]);
+
+                // here we need to get a minimum vote count, value is set to 200 minimum votes
+                if (params[0].equals(mContext.getString(R.string.pref_sort_user_rating)))
+                    builder.appendQueryParameter("vote_count.gte", "200");
+            }
+            builder.appendQueryParameter("api_key", mContext.getString(R.string.tmdb_api_key));
 
             String website = builder.build().toString();
+            Log.v(LOG_TAG, website);
             URL url = new URL(website);
 
             // Create the request to themoviedb and open connection

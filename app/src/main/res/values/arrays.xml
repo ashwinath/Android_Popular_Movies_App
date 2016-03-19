@@ -19,10 +19,13 @@
     <string-array name="pref_sort_list">
         <item>@string/pref_sort_label_popularity</item>
         <item>@string/pref_sort_label_user_rating</item>
+        <item>@string/pref_sort_label_upcoming</item>
     </string-array>
 
     <string-array name="pref_sort_values">
         <item>@string/pref_sort_popularity</item>
         <item>@string/pref_sort_user_rating</item>
+        <!-- we put the value as the same since the url will be completely different-->
+        <item>@string/pref_sort_label_upcoming</item>
     </string-array>
 </resources>
