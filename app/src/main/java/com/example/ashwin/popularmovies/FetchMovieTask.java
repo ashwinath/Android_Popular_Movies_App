@@ -87,7 +87,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
             builder.appendQueryParameter("api_key", mContext.getString(R.string.tmdb_api_key));
 
             String website = builder.build().toString();
-            Log.v(LOG_TAG, website);
             URL url = new URL(website);
 
             // Create the request to themoviedb and open connection
