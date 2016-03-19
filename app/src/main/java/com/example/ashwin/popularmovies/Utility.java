@@ -29,6 +29,7 @@ public class Utility {
     public static String formatDate(String date) {
         // input date will be like 2015-03-09
         List<String> dateList = Arrays.asList(date.split("-"));
+        int day = Integer.parseInt(dateList.get(2));
         int month = Integer.parseInt(dateList.get(1));
         int year = Integer.parseInt(dateList.get(0));
         String monthString;
@@ -72,7 +73,7 @@ public class Utility {
             default:
                 monthString = "Unknown";
         }
-        return monthString + " " + year;
+        return day + " " + monthString + " " + year;
     }
 
     public static String formatRatings(double rating) {
