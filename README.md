@@ -4,12 +4,14 @@ An android app that I did while learning programming in my free time.
 Idea was inspired from Udacity's Android Developer Nanodegree programme.
 
 ## Features
-* Check out most popular and highest rated movies
+* Check out most popular, highest rated and upcoming movies
 * Watch trailers
 * Read reviews
 
 ## How to compile
 * Add your own API key from [The Movie Database](http://www.themoviedb.org/documentation/API) to strings.xml.
+* use the android studio to compile
+* or ./gradlew assembleRelease
 
 ## Screenshots
 ![Screenshot](http://i.imgur.com/QxcSuFH.jpg)
