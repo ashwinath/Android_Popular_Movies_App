@@ -12,7 +12,8 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 * Add your own API key from [The Movie Database](http://www.themoviedb.org/documentation/API) to strings.xml.
 * use the android studio to compile
 * or issue the command 
-```./gradlew assembleRelease
+
+``./gradlew assembleRelease``
 
 ## Screenshots
 ![Screenshot](http://i.imgur.com/QxcSuFH.jpg)
