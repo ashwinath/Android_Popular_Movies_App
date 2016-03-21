@@ -12,11 +12,10 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 * Add your own API key from [The Movie Database](http://www.themoviedb.org/documentation/API) to strings.xml.
 
 ## Screenshots
-![Screenshot](http://i.imgur.com/smJ91Ui.png)
-![Screenshot](http://i.imgur.com/JfGOSS0.png)
-![Screenshot](http://i.imgur.com/F54x2Gv.png)
-![Screenshot](http://i.imgur.com/mU2jMM1.png)
-![Screenshot](http://i.imgur.com/WBNcJOO.png)
+![Screenshot](http://i.imgur.com/QxcSuFH.jpg)
+![Screenshot](http://i.imgur.com/69EnmMZ.png)
+![Screenshot](http://i.imgur.com/JMsntgs.png)
+![Screenshot](http://i.imgur.com/C7DhtcX.png)
 
 ## Credits for images
 * http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png
