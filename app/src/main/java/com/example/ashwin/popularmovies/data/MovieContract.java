@@ -31,6 +31,7 @@ public final class MovieContract {
     public static final String CONTENT_AUTHORITY = "com.example.ashwin.popularmovies";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_MOVIES = "movies";
+    public static final String PATH_MOVIES_FAVOURITES = "movies_favourites";
 
     /**
      * Movies interface for the Movies Database
@@ -46,7 +47,6 @@ public final class MovieContract {
         String COLUMN_MOVIE_POSTER_PATH = "movie_poster_path";
         String COLUMN_MOVIE_BACKDROP_PATH = "movie_backdrop_path";
         String COLUMN_MOVIE_RELEASE_DATE = "movie_release_date";
-        String COLUMN_MOVIE_FAVOURITED = "movie_favourited";
     }
 
     /**
@@ -62,6 +62,32 @@ public final class MovieContract {
 
         // Table name
         public static final String TABLE_NAME = "movies";
+
+        /**
+         * Build Uri for movieId
+         */
+        public static Uri buildMovieUri(String movieId) {
+            return CONTENT_URI.buildUpon().appendPath(movieId).build();
+        }
+
+        /**
+         * read movie id from movie link uri
+         */
+        public static String getMovieId(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
+
+    public static final class FavouritesMoviesEntry implements BaseColumns, MovieColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES_FAVOURITES).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES_FAVOURITES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES_FAVOURITES;
+
+        // Table name
+        public static final String FAVOURTIES_TABLE_NAME = "movie_favourites";
 
         /**
          * Build Uri for movieId

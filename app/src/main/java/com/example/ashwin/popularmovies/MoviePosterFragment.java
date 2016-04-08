@@ -20,6 +20,8 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Movie;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +43,10 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
 
     private MovieAdapter mMovieAdapter;
     private static final int MOVIE_LOADER = 0;
+    private boolean isFavouriteStatus = false;
+    private final String LOG_TAG = MoviePosterFragment.class.getSimpleName();
 
+    // favourite tables and the temp table is the same
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
             MovieContract.MovieColumns.COLUMN_MOVIE_ID,
@@ -53,7 +59,6 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE,
-            MovieContract.MovieColumns.COLUMN_MOVIE_FAVOURITED
     };
 
     // these indices are tied to the MOVIE_COLUMNS String
@@ -68,7 +73,6 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     static final int COL_MOVIE_POSTER_PATH = 8;
     static final int COL_MOVIE_BACKDROP_PATH = 9;
     static final int COL_MOVIE_RELEASE_DATE = 10;
-    static final int COLUMN_MOVIE_FAVOURITED = 11;
 
     public MoviePosterFragment() {
     }
@@ -93,10 +97,19 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                if (cursor != null) {
+                Uri uri;
+                if (isFavouriteStatus) {
+                    uri = MovieContract.FavouritesMoviesEntry.buildMovieUri(
+                            cursor.getString(COL_MOVIE_ID));
+                } else {
+                    uri = MovieContract.MoviesEntry.buildMovieUri(
+                            cursor.getString(COL_MOVIE_ID));
+                }
+
+                if (uri != null) {
                     Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(MovieContract.MoviesEntry.buildMovieUri(
-                                    cursor.getString(COL_MOVIE_ID)));
+                            .putExtra("isFavourite", isFavouriteStatus)
+                            .setData(uri);
                     startActivity(intent);
                 }
             }
@@ -117,8 +130,17 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     public void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask(getContext());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_label_user_rating));
-        movieTask.execute(sortby);
+        isFavouriteStatus = isFavourite(prefs);
+        if (!isFavouriteStatus) {
+            String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_label_user_rating));
+            movieTask.execute(sortby);
+        }
+    }
+
+    private boolean isFavourite(SharedPreferences prefs) {
+        return getContext().getString(R.string.pref_sort_favourites).equals(
+                prefs.getString(getString(R.string.pref_sort_key),
+                        getString(R.string.pref_sort_label_user_rating)));
     }
 
     // KIV
@@ -137,8 +159,12 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = MovieContract.MoviesEntry._ID + " ASC";
+        Uri uri = isFavouriteStatus ?
+                MovieContract.FavouritesMoviesEntry.CONTENT_URI : MovieContract.MoviesEntry.CONTENT_URI;
+        Log.v(LOG_TAG, uri.toString());
+
         return new CursorLoader(getActivity(),
-                MovieContract.MoviesEntry.CONTENT_URI,
+                uri,
                 MOVIE_COLUMNS,
                 null,
                 null,

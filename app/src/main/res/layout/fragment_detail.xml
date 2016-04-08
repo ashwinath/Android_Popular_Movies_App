@@ -82,6 +82,14 @@
                     android:textSize="@dimen/text_size_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/favourite_text"
+                    android:textColor="@color/text_body"
+                    android:textSize="@dimen/text_size_medium"
+                    android:text="Favourites"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </LinearLayout>

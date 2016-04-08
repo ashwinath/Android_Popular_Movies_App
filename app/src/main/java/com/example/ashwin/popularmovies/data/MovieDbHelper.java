@@ -27,11 +27,13 @@ import com.example.ashwin.popularmovies.data.MovieContract.*;
  */
 public class MovieDbHelper extends SQLiteOpenHelper {
     // if you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     static final String DATABASE_NAME = "movie.db";
+    private Context context;
 
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -49,16 +51,30 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 + MovieColumns.COLUMN_MOVIE_POSTER_PATH + " TEXT, "
                 + MovieColumns.COLUMN_MOVIE_BACKDROP_PATH + " TEXT, "
                 + MovieColumns.COLUMN_MOVIE_RELEASE_DATE + " TEXT, "
-                + MovieColumns.COLUMN_MOVIE_FAVOURITED + " INTEGER NOT NULL DEFAULT 0, "
                 + "UNIQUE (" + MovieColumns.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE)";
 
+        // here we create a table for favourites
+        final String SQL_CREATE_FAVOURITES_TABLE = "CREATE TABLE " + FavouritesMoviesEntry.FAVOURTIES_TABLE_NAME
+                + "(" + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_OVERVIEW + " TEXT, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_GENRES + " TEXT, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_POPULARITY + " REAL, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_VOTE_COUNT + " INTEGER, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_VOTE_AVERAGE + " REAL, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_BACKDROP_PATH + " TEXT, "
+                + FavouritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT, "
+                + "UNIQUE (" + FavouritesMoviesEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE)";
         db.execSQL(SQL_CREATE_MOVIES_TABLE);
+        db.execSQL(SQL_CREATE_FAVOURITES_TABLE);
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // do nothing as for now.
+        deleteDatabase(context);
     }
 
     public static void deleteDatabase(Context context) {
