@@ -19,10 +19,11 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 ![Screenshot](http://i.imgur.com/kKNq5QU.png)
 ![Screenshot](http://i.imgur.com/1m3thPZ.png)
 ![Screenshot](http://i.imgur.com/qfge1yF.png)
-<img src=>"http://i.imgur.com/CaHU2v3.png" width ="500">
-<img src=>"http://i.imgur.com/kKNq5QU.png" width ="500">
-<img src=>"http://i.imgur.com/1m3thPZ.png" width ="500">
-<img src=>"http://i.imgur.com/qfge1yF.png" width ="500">
+<a href="url"><img src=>"http://i.imgur.com/CaHU2v3.png" width ="500"></a>
+<a href="url"><img src=>"http://i.imgur.com/kKNq5QU.png" width ="500"></a>
+<a href="url"><img src=>"http://i.imgur.com/1m3thPZ.png" width ="500"></a>
+<a href="url"><img src=>"http://i.imgur.com/qfge1yF.png" width ="500"></a>
+
 
 ## Credits for images
 * http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png
