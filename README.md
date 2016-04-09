@@ -7,6 +7,7 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 * Check out most popular, highest rated and upcoming movies
 * Watch trailers
 * Read reviews
+* Add movie to favourites
 
 ## How to compile
 * Add your own API key from [The Movie Database](http://www.themoviedb.org/documentation/API) to strings.xml.
