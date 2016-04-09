@@ -185,9 +185,8 @@ public final class MovieProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         if (uri.equals(MovieContract.BASE_CONTENT_URI)) {
-            mMovieHelper.close();
-            MovieDbHelper.deleteDatabase(getContext());
-            mMovieHelper = new MovieDbHelper(getContext());
+            final SQLiteDatabase db = mMovieHelper.getWritableDatabase();
+            db.delete(MoviesEntry.TABLE_NAME, null, null);
             getContext().getContentResolver().notifyChange(uri, null);
             return 1;
         } else if (sUriMatcher.match(uri) == MOVIE) {
