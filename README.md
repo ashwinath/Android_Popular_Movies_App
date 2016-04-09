@@ -19,10 +19,6 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 ![Screenshot](http://i.imgur.com/kKNq5QU.png)
 ![Screenshot](http://i.imgur.com/1m3thPZ.png)
 ![Screenshot](http://i.imgur.com/qfge1yF.png)
-<a href="url"><img src=>"http://i.imgur.com/CaHU2v3.png" width ="500"></a>
-<a href="url"><img src=>"http://i.imgur.com/kKNq5QU.png" width ="500"></a>
-<a href="url"><img src=>"http://i.imgur.com/1m3thPZ.png" width ="500"></a>
-<a href="url"><img src=>"http://i.imgur.com/qfge1yF.png" width ="500"></a>
 
 
 ## Credits for images
