@@ -71,7 +71,21 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     private TextView favouriteButtonView;
 
     private static final String[] MOVIE_COLUMNS = {
-            MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
+            MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.FavouritesMoviesEntry._ID,
+            MovieContract.MovieColumns.COLUMN_MOVIE_ID,
+            MovieContract.MovieColumns.COLUMN_MOVIE_TITLE,
+            MovieContract.MovieColumns.COLUMN_MOVIE_OVERVIEW,
+            MovieContract.MovieColumns.COLUMN_MOVIE_GENRES,
+            MovieContract.MovieColumns.COLUMN_MOVIE_POPULARITY,
+            MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_COUNT,
+            MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE,
+            MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
+            MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
+            MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE,
+    };
+
+    private static final String[] FAVOURITE_MOVIE_COLUMNS = {
+            MovieContract.FavouritesMoviesEntry.FAVOURTIES_TABLE_NAME + "." + MovieContract.FavouritesMoviesEntry._ID,
             MovieContract.MovieColumns.COLUMN_MOVIE_ID,
             MovieContract.MovieColumns.COLUMN_MOVIE_TITLE,
             MovieContract.MovieColumns.COLUMN_MOVIE_OVERVIEW,
@@ -209,7 +223,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         return new CursorLoader(
                 getActivity(),
                 intent.getData(),
-                MOVIE_COLUMNS,
+                isFavourite ? FAVOURITE_MOVIE_COLUMNS : MOVIE_COLUMNS,
                 null,
                 null,
                 null
