@@ -16,9 +16,12 @@
 
 package com.example.ashwin.popularmovies;
 
+import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -42,12 +45,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
-        FetchReviewTask.ReviewAsyncResponse, FetchTrailerTask.TrailerAsyncResponse {
+        FetchReviewTask.ReviewAsyncResponse, FetchTrailerTask.TrailerAsyncResponse,
+        DetailActivity.Clickable {
     private static final int DETAIL_LOADER = 0;
     FetchTrailerTask trailerAsyncTask;
     FetchReviewTask reviewAsyncTask;
     boolean hasReviewAsyncTasked = false;
     boolean hasTrailerAsyncTasked = false;
+    boolean isFavourite;
+    private Intent intent;
+    private String movieId;
+    private ContentValues thisMovieCV;
 
     // Views
     private ImageView backDropView;
@@ -60,6 +68,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     private TextView reviewHeaderView;
     private NonScrollListView youtubeLinkListView;
     private NonScrollListView reviewListView;
+    private TextView favouriteButtonView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
@@ -73,7 +82,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE,
-            MovieContract.MovieColumns.COLUMN_MOVIE_FAVOURITED
     };
 
     // these indices are tied to the MOVIE_COLUMNS String
@@ -88,7 +96,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     static final int COL_MOVIE_POSTER_PATH = 8;
     static final int COL_MOVIE_BACKDROP_PATH = 9;
     static final int COL_MOVIE_RELEASE_DATE = 10;
-    static final int COLUMN_MOVIE_FAVOURITED = 11;
 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
     // review array stuff
@@ -112,6 +119,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
         reviewListView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
         reviewHeaderView = (TextView) rootView.findViewById(R.id.review_header);
+        favouriteButtonView = (TextView) rootView.findViewById(R.id.favourite_text);
 
         return rootView;
     }
@@ -127,6 +135,36 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             mReviewAdapter = new ArrayAdapter<String>(getContext(), R.layout.review_text_view,
                     R.id.review_textview, list);
             reviewListView.setAdapter(mReviewAdapter);
+        }
+    }
+
+    // onClick for favouriting
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void clickMethod(View v) {
+        Log.v(LOG_TAG, "CLICKED");
+        Cursor cursor = getContext().getContentResolver().query(
+                MovieContract.FavouritesMoviesEntry.CONTENT_URI,
+                new String[] { MovieContract.MovieColumns.COLUMN_MOVIE_ID },
+                MovieContract.MovieColumns.COLUMN_MOVIE_ID + " = ?",
+                new String[] { movieId },
+                null,
+                null
+        );
+        boolean isFavourited = (cursor.getCount() == 1);
+        cursor.close();
+        Log.v(LOG_TAG, "" + isFavourited);
+        if (isFavourited) {
+            getContext().getContentResolver().delete(
+                    MovieContract.FavouritesMoviesEntry.CONTENT_URI,
+                    MovieContract.MovieColumns.COLUMN_MOVIE_ID + " = ?",
+                    new String[] { movieId }
+            );
+        } else {
+            getContext().getContentResolver().insert(
+                    MovieContract.FavouritesMoviesEntry.CONTENT_URI,
+                    thisMovieCV
+            );
         }
     }
 
@@ -164,7 +202,8 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
+        intent = getActivity().getIntent();
+        isFavourite = intent.getExtras().getBoolean("isFavourite");
         if (intent == null)
             return null;
         return new CursorLoader(
@@ -181,6 +220,20 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst())
             return;
+
+        // here we populate the content values of this movie
+        thisMovieCV = new ContentValues();
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_ID, data.getString(COL_MOVIE_ID));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_TITLE, data.getString(COL_MOVIE_TITLE));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_OVERVIEW, data.getString(COL_MOVIE_OVERVIEW));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_GENRES, data.getString(COL_MOVIE_GENRES));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_POPULARITY, data.getString(COL_MOVIE_POPULARITY));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_COUNT, data.getString(COL_MOVIE_VOTE_COUNT));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_VOTE_AVERAGE, data.getString(COL_MOVIE_VOTE_AVERAGE));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH, data.getString(COL_MOVIE_POSTER_PATH));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH, data.getString(COL_MOVIE_BACKDROP_PATH));
+        thisMovieCV.put(MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE, data.getString(COL_MOVIE_RELEASE_DATE));
+
         String backDropUrl = "http://image.tmdb.org/t/p/w342" + data.getString(COL_MOVIE_BACKDROP_PATH);
         String posterUrl = "http://image.tmdb.org/t/p/w185" + data.getString(COL_MOVIE_POSTER_PATH);
         String title = data.getString(COL_MOVIE_TITLE);
@@ -188,7 +241,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         String rating = Utility.formatRatings(data.getDouble(COL_MOVIE_VOTE_AVERAGE));
         String genres = Utility.formatGenres(data.getString(COL_MOVIE_GENRES));
         String overview = data.getString(COL_MOVIE_OVERVIEW);
-        String movieId = data.getString(COL_MOVIE_ID);
+        movieId = data.getString(COL_MOVIE_ID);
 
         // backdrop
         Picasso.with(getContext())

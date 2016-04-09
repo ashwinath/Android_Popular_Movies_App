@@ -18,21 +18,35 @@ package com.example.ashwin.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class DetailActivity extends AppCompatActivity {
+
+    Clickable fragment;
+
+    public interface Clickable {
+        void clickMethod(View v);
+    }
+
+    public void onClick(View v) {
+        fragment.clickMethod(v);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
+            DetailFragment detailFragment = new DetailFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailFragment())
+                    .add(R.id.container, detailFragment)
                     .commit();
+            fragment = detailFragment;
         }
     }
 

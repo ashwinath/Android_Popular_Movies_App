@@ -46,7 +46,6 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     private boolean isFavouriteStatus = false;
     private final String LOG_TAG = MoviePosterFragment.class.getSimpleName();
 
-    // favourite tables and the temp table is the same
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.MoviesEntry._ID,
             MovieContract.MovieColumns.COLUMN_MOVIE_ID,
@@ -59,6 +58,20 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieColumns.COLUMN_MOVIE_POSTER_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_BACKDROP_PATH,
             MovieContract.MovieColumns.COLUMN_MOVIE_RELEASE_DATE,
+    };
+
+    private static final String[] FAVOURITES_MOVIE_COLUMNS = {
+            MovieContract.FavouritesMoviesEntry.FAVOURTIES_TABLE_NAME + "." + MovieContract.FavouritesMoviesEntry._ID,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_ID,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_TITLE,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_OVERVIEW,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_GENRES,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_POPULARITY,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_VOTE_COUNT,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_VOTE_AVERAGE,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_POSTER_PATH,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_BACKDROP_PATH,
+            MovieContract.FavouritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE,
     };
 
     // these indices are tied to the MOVIE_COLUMNS String
@@ -128,10 +141,10 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void updateMovie() {
-        FetchMovieTask movieTask = new FetchMovieTask(getContext());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         isFavouriteStatus = isFavourite(prefs);
         if (!isFavouriteStatus) {
+            FetchMovieTask movieTask = new FetchMovieTask(getContext());
             String sortby = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_label_user_rating));
             movieTask.execute(sortby);
         }
@@ -151,6 +164,12 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        onFavouritesChange();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
@@ -158,14 +177,22 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = MovieContract.MoviesEntry._ID + " ASC";
-        Uri uri = isFavouriteStatus ?
-                MovieContract.FavouritesMoviesEntry.CONTENT_URI : MovieContract.MoviesEntry.CONTENT_URI;
-        Log.v(LOG_TAG, uri.toString());
+        String sortOrder;
+        Uri uri;
+        String[] movieColumns;
+        if (isFavouriteStatus) {
+            sortOrder = MovieContract.FavouritesMoviesEntry._ID + " ASC";
+            uri = MovieContract.FavouritesMoviesEntry.CONTENT_URI;
+            movieColumns = FAVOURITES_MOVIE_COLUMNS;
+        } else {
+            sortOrder = MovieContract.MoviesEntry._ID + " ASC";
+            uri = MovieContract.MoviesEntry.CONTENT_URI;
+            movieColumns = MOVIE_COLUMNS;
+        }
 
         return new CursorLoader(getActivity(),
                 uri,
-                MOVIE_COLUMNS,
+                movieColumns,
                 null,
                 null,
                 sortOrder);
@@ -183,4 +210,8 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
         mMovieAdapter.swapCursor(null);
     }
 
+    void onFavouritesChange() {
+        updateMovie();
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+    }
 }
