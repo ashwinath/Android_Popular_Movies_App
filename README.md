@@ -15,10 +15,10 @@ Idea was inspired from Udacity's Android Developer Nanodegree programme.
 * or issue the command ``./gradlew assembleRelease``
 
 ## Screenshots
-![Screenshot](http://i.imgur.com/QxcSuFH.jpg)
-![Screenshot](http://i.imgur.com/69EnmMZ.png)
-![Screenshot](http://i.imgur.com/JMsntgs.png)
-![Screenshot](http://i.imgur.com/C7DhtcX.png)
+![Screenshot](http://i.imgur.com/CaHU2v3.png)
+![Screenshot](http://i.imgur.com/kKNq5QU.png)
+![Screenshot](http://i.imgur.com/1m3thPZ.png)
+![Screenshot](http://i.imgur.com/qfge1yF.png)
 
 ## Credits for images
 * http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png
