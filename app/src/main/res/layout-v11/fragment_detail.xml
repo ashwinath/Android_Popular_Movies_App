@@ -85,6 +85,7 @@
                 <ImageButton
                     android:id="@+id/favourite_button"
                     style="?android:attr/borderlessButtonStyle"
+                    android:layout_gravity="center"
                     android:onClick="onClick"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent" />

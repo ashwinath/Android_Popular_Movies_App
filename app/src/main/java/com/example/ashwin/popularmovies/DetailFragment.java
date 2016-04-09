@@ -183,7 +183,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
                     MovieContract.FavouritesMoviesEntry.CONTENT_URI,
                     thisMovieCV
             );
-            favouriteButtonView.setImageResource(R.drawable.button_pressed);
+            favouriteButtonView.setImageResource(R.drawable.button_on);
         }
     }
 
@@ -302,7 +302,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         }
 
         favouriteButtonView.setImageResource(
-                isFavourited() ? R.drawable.button_pressed : R.drawable.button_normal
+                isFavourited() ? R.drawable.button_on : R.drawable.button_normal
         );
     }
 
