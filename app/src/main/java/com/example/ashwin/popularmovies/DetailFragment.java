@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,7 +69,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
     private TextView reviewHeaderView;
     private NonScrollListView youtubeLinkListView;
     private NonScrollListView reviewListView;
-    private TextView favouriteButtonView;
+    private ImageButton favouriteButtonView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MoviesEntry.TABLE_NAME + "." + MovieContract.FavouritesMoviesEntry._ID,
@@ -133,7 +134,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         youtubeLinkListView = (NonScrollListView) rootView.findViewById(R.id.youtube_button_list);
         reviewListView = (NonScrollListView) rootView.findViewById(R.id.review_view_custom);
         reviewHeaderView = (TextView) rootView.findViewById(R.id.review_header);
-        favouriteButtonView = (TextView) rootView.findViewById(R.id.favourite_text);
+        favouriteButtonView = (ImageButton) rootView.findViewById(R.id.favourite_button);
 
         return rootView;
     }
@@ -152,11 +153,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
         }
     }
 
-    // onClick for favouriting
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void clickMethod(View v) {
-        Log.v(LOG_TAG, "CLICKED");
+    private boolean isFavourited() {
         Cursor cursor = getContext().getContentResolver().query(
                 MovieContract.FavouritesMoviesEntry.CONTENT_URI,
                 new String[] { MovieContract.MovieColumns.COLUMN_MOVIE_ID },
@@ -165,20 +162,28 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
                 null,
                 null
         );
-        boolean isFavourited = (cursor.getCount() == 1);
+        boolean isFavourite = (cursor.getCount() == 1);
         cursor.close();
-        Log.v(LOG_TAG, "" + isFavourited);
-        if (isFavourited) {
+        return isFavourite;
+    }
+
+    // onClick for favouriting
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void clickMethod(View v) {
+        if (isFavourited()) {
             getContext().getContentResolver().delete(
                     MovieContract.FavouritesMoviesEntry.CONTENT_URI,
                     MovieContract.MovieColumns.COLUMN_MOVIE_ID + " = ?",
                     new String[] { movieId }
             );
+            favouriteButtonView.setImageResource(R.drawable.button_normal);
         } else {
             getContext().getContentResolver().insert(
                     MovieContract.FavouritesMoviesEntry.CONTENT_URI,
                     thisMovieCV
             );
+            favouriteButtonView.setImageResource(R.drawable.button_pressed);
         }
     }
 
@@ -295,6 +300,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor>,
             // ensure that it does not load again
             hasReviewAsyncTasked = true;
         }
+
+        favouriteButtonView.setImageResource(
+                isFavourited() ? R.drawable.button_pressed : R.drawable.button_normal
+        );
     }
 
     @Override
