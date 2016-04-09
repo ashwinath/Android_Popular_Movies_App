@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.ashwin.popularmovies.data.MovieContract;
 
@@ -126,6 +127,10 @@ public class MoviePosterFragment extends Fragment implements LoaderManager.Loade
                 }
             }
         });
+
+        // set the empty text
+        TextView emptyText = (TextView) rootView.findViewById(android.R.id.empty);
+        gridview.setEmptyView(emptyText);
         return rootView;
     }
 
